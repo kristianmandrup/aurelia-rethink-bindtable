@@ -1,6 +1,9 @@
-var io = {
+let io = {
   connect: createMockSocketObject
 };
+
+export default io;
+
 function createMockSocketObject () {
 
   var socket = {

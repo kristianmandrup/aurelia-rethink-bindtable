@@ -24,9 +24,10 @@ INFO [karma]: Karma v0.12.31 server started at http://localhost:9877/
 INFO [launcher]: Starting browser Chrome
 INFO [Chrome 41.0.2272 (Mac OS X 10.10.2)]: Connected on socket cZNHR1B6WAacnOS_3bE5 with id 9608952
 WARN [web-server]: 404: /base/bindtable.js
-WARN [web-server]: 404: /base/lib/bindtable.js
 Chrome 41.0.2272 (Mac OS X 10.10.2): Executed 0 of 0 ERROR (0.002 secs / 0 secs)
 ```
+
+Currently some weird reference error, where bindtable is being referenced without its container folder `src`. Suggestions most welcome!
 
 ### Binding ViewModels
 

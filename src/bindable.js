@@ -1,4 +1,4 @@
-import {BindTable} from 'bindtable';
+import {BindTable} from './bindtable';
 
 export class Bindable {
   static inject() { return [BindTable]; }
