@@ -1,19 +1,66 @@
 {
   "name": "aurelia-rethink-bindtable",
   "version": "0.1.0",
-  "description": "Bind Table Aurelia <-> RethinkDB via Socket.IO",
+  "description": "An Aurelia plugin for binding RethinkDB via Socket.IO",
+  "keywords": [
+    "aurelia",
+    "rethinkdb",
+    "binding",
+    "databinding",
+    "sockets"
+  ],
+  "homepage": "https://github.com/kristianmandrup/aurelia-rethink-bindtable",
+  "bugs": {
+    "url": "https://github.com/kristianmandrup/aurelia-rethink-bindtable/issues"
+  },
+  "license": "MIT",
+  "author": "Kristian Mandrup <kmandrup@gmail.com> (https://github.com/kristianmandrup)",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/kristianmandrup/aurelia-rethink-bindtable"
+  },
   "main": "aurelia-bindtable.js",
   "scripts": {
     "test": "./node_modules/.bin/karma start --browsers Chrome --single-run"
+  },  
+  "jspm": {
+    "main": "system/index",
+    "format": "register",
+    "directories": {
+      "lib": "dist"
+    },
+    "dependencies": {
+      "aurelia-binding": "^0.3.7",
+      "aurelia-http-client": "^0.5.5",
+      "socket.io": "^1.0",
+      "rethinkdb": "^1.16"
+    }
   },
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
-    "angular": "^1.3.13",
-    "angular-mocks": "^1.3.13",
-    "jasmine-core": "^2.2.0",
-    "karma": "^0.12.31",
+    "aurelia-tools": "^0.1.0",
+    "browser-sync": "^1.8.1",
+    "conventional-changelog": "0.0.11",
+    "del": "^1.1.0",
+    "gulp": "^3.8.10",
+    "gulp-babel": "^4.0.0",
+    "gulp-bump": "^0.1.11",
+    "gulp-changed": "^1.1.0",
+    "gulp-jshint": "^1.9.0",
+    "gulp-plumber": "^0.6.6",
+    "gulp-protractor": "^0.0.12",
+    "gulp-sourcemaps": "^1.3.0",
+    "gulp-yuidoc": "^0.1.2",
+    "jasmine-core": "^2.1.3",
+    "jshint-stylish": "^1.0.0",
+    "karma": "^0.12.28",
+    "karma-babel-preprocessor": "^4.0.0",
     "karma-chrome-launcher": "^0.1.7",
-    "karma-jasmine": "^0.3.5"
+    "karma-jasmine": "^0.3.5",
+    "karma-jspm": "^1.0.1",
+    "object.assign": "^1.0.3",
+    "require-dir": "^0.1.0",
+    "run-sequence": "^1.0.2",
+    "vinyl-paths": "^1.0.0",
+    "yargs": "^2.1.1"
   }
 }

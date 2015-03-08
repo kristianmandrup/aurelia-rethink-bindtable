@@ -1,12 +1,16 @@
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
+
 describe('bindTable', function(){
+
   beforeEach(module('bindtable'));
+  
   var bindTable,
       mockSocket,
       rootScope;
-  beforeEach(inject(function($rootScope){
-    rootScope = $rootScope; 
-  }))
+  
+  beforeEach(
+  )
+  
   beforeEach(inject(function(bindTableFactory){
     mockSocket = io.connect();
     bindTable = bindTableFactory({
