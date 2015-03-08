@@ -2,23 +2,49 @@
 
 Forked from https://github.com/knowthen/BindTable and tweaked to work for Aurelia ;)
 
+See https://gitter.im/Aurelia/Discuss?at=54e1f6efcfb73e3306d3d87e
+
+Example config in Aurelia
+
+First add the plugin `'aurelia-bindtable'` in `main.js`
+
 ```javascript
+export function configure(aurelia) {
+  aurelia.use
+  ...
+  .plugin('aurelia-bindtable')
+```
 
-// Example config in Aurelia
+Then create the BindTable configurator
 
-var app = angular.module('realtime', 
-  ['btford.socket-io', 'bindtable']);
 
-app.factory('socket', function(socketFactory){
-  return socketFactory();
-});
+```
+import {io} from 'socket.io-client';
+import {bindTableFactory} from 'aurelia-bindtable';
 
-app.factory('bindTable', function(bindTableFactory, socket){
-  return bindTableFactory({socket: socket});
+export class BindTable
+  static inject() { return [bindTableFactory]; }
+  
+  constructor(bindTableFactory){
+    this.socket = io('http://localhost');
+    this.instance = bindTableFactory({socket: this.socket});
+  }
 });
 ```
 
-ViewModel `Questions`
+`aurelia-bindtable` exports the function `bindTableFactory` which is injected.
+
+```
+export function bindTableFactory (options) {
+  ...
+}
+```
+
+
+
+Now create a ViewModel `Questions` that binds to the table `'question'` via bindtable ;)
+
+This can be further optimized by having the common bindtable logic in a separate subclass or module for inclusion in multiple table bindable ViewModel classes.
 
 ```javascript
 import {BindTable} from 'aurelia-bindtable';
@@ -46,6 +72,8 @@ export class Member {
   }    
 }
 ```
+
+That's it!!
 
 ### Server side code
 ```javascript
