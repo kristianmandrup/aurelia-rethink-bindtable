@@ -30,7 +30,7 @@ describe('bindTable', function(){
         expect(record.id).toEqual(123);
         done();
       });
-    rootScope.$digest();
+    // rootScope.$digest();
   });
   it('should add a record that is in rows array', function (done){
     mockSocket.on('myTable:add', function(data, cb){
@@ -43,7 +43,7 @@ describe('bindTable', function(){
         expect(myTable.rows.length).toEqual(1);
         done();
       });
-    rootScope.$digest();
+    // rootScope.$digest();
   });
 
   it('should update an existing record', function (done) {
@@ -65,7 +65,7 @@ describe('bindTable', function(){
         expect(updatedRecord.name).toEqual('James Moore');
         done();
       });
-    rootScope.$digest();
+    // rootScope.$digest();
   });
 
   it('should update an existing record in the rows array', function(done){
@@ -87,7 +87,7 @@ describe('bindTable', function(){
         expect(myTable.rows[0].name).toEqual('James Moore');
         done();
       });
-    rootScope.$digest();
+    // rootScope.$digest();
   });
 
   it('should not update other records in rows array', function(done){
@@ -113,7 +113,7 @@ describe('bindTable', function(){
         expect(myTable.rows[0].name).toEqual('Bob');
         done();
       });
-    rootScope.$digest();
+    // rootScope.$digest();
   });
 
   it('should delete a record', function(done){
@@ -137,7 +137,7 @@ describe('bindTable', function(){
         expect(myTable.rows.length).toEqual(1);
         done();
       });
-    rootScope.$digest();
+    // rootScope.$digest();
   });
 
   it('should update array automatically on outside update', function(done){
@@ -166,6 +166,6 @@ describe('bindTable', function(){
         })
       });
 
-    rootScope.$digest();
+    // rootScope.$digest();
   });
 });

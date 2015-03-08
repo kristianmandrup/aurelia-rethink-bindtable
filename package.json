@@ -1,8 +1,8 @@
 {
-  "name": "BindTable",
+  "name": "aurelia-rethink-bindtable",
   "version": "0.1.0",
-  "description": "Bind Table RethinkDB AngularJS binding",
-  "main": "bindtable.js",
+  "description": "Bind Table Aurelia <-> RethinkDB via Socket.IO",
+  "main": "aurelia-bindtable.js",
   "scripts": {
     "test": "./node_modules/.bin/karma start --browsers Chrome --single-run"
   },
