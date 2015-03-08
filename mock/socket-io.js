@@ -1,4 +1,4 @@
-let io = {
+var io = {
   connect: createMockSocketObject
 };
 

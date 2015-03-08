@@ -23,11 +23,16 @@ WARN [karma]: Port 9876 in use
 INFO [karma]: Karma v0.12.31 server started at http://localhost:9877/
 INFO [launcher]: Starting browser Chrome
 INFO [Chrome 41.0.2272 (Mac OS X 10.10.2)]: Connected on socket cZNHR1B6WAacnOS_3bE5 with id 9608952
-WARN [web-server]: 404: /base/bindtable.js
-Chrome 41.0.2272 (Mac OS X 10.10.2): Executed 0 of 0 ERROR (0.002 secs / 0 secs)
+..
 ```
 
-Currently some weird reference error, where bindtable is being referenced without its container folder `src`. Suggestions most welcome!
+Currently a few errors related to new ES6 syntax and new constructs. 
+Please help out ;)
+
+- [modules the ES6 way](http://24ways.org/2014/javascript-modules-the-es6-way/)
+- [Get started with ES6 modules](http://eviltrout.com/2014/05/03/getting-started-with-es6.html)
+
+
 
 ### Binding ViewModels
 

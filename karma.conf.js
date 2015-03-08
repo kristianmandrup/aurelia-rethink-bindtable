@@ -18,6 +18,12 @@ module.exports = function(config) {
       loadFiles: ['src/**/*.js', 'test/**/*.js', 'mock/**/*.js']
     },
 
+    client: {
+      captureConsole: true,
+      mocha: {
+        bail: true
+      }
+    },
 
     // list of files / patterns to load in the browser
     files: [],
