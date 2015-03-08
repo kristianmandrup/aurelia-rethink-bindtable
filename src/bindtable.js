@@ -7,7 +7,7 @@ import {Record} from './record';
 import {Table}  from './table'; 
 
 import {Bindable} from './bindable';
-export Bindable;
+export {Bindable};
 
 export function createBindTable (options) {
   new BindTable(options);

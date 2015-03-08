@@ -1,6 +1,6 @@
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 
-import {BindTable} from '../lib/bindtable';
+import {BindTable} from '../src/bindtable';
 
 // import 'co' from 'co-mocha'; 
 

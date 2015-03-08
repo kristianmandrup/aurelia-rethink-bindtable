@@ -8,6 +8,26 @@ BindTable was inspired by [Build Realtime Apps](http://knowthen.com/episode-10-b
 
 See [Aurelia getting started](https://gist.github.com/kristianmandrup/e1099f54bbb7f6968af7) to get up and running!
 
+### Install
+
+`$ npm install && jspm install`
+`$ jspm dl-loader`
+
+### Running tests
+
+`$ karma start`
+
+```
+$ karma start
+WARN [karma]: Port 9876 in use
+INFO [karma]: Karma v0.12.31 server started at http://localhost:9877/
+INFO [launcher]: Starting browser Chrome
+INFO [Chrome 41.0.2272 (Mac OS X 10.10.2)]: Connected on socket cZNHR1B6WAacnOS_3bE5 with id 9608952
+WARN [web-server]: 404: /base/bindtable.js
+WARN [web-server]: 404: /base/lib/bindtable.js
+Chrome 41.0.2272 (Mac OS X 10.10.2): Executed 0 of 0 ERROR (0.002 secs / 0 secs)
+```
+
 ### Binding ViewModels
 
 See [Client API](http://socket.io/docs/client-api/)

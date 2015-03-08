@@ -34,7 +34,6 @@ export class Table {
     table.update    = this.updateRecord(table);
     table.findById  = this.findRecordById(table);
 
-    let 
     table.save = (record) => {
       return record.id ? this.update(record) : this.add(record);
     }

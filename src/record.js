@@ -38,7 +38,7 @@ export class Record {
           resolve(record);
         }
       });
-    );
+    });
     return promise;
   }  
 
@@ -64,15 +64,16 @@ export class Record {
     let table = this.table;
     let record = this.record;
     let idx = findIndex(table.rows, record, table.pkName);
-    if(idx > -1){
+
+    if (idx > -1) {
       table.rows[idx] = record;
     }
-    else{
+    else {
       idx = findInsertIndex(table, record);
-      if(idx > -1){
+      if (idx > -1) {
         table.rows.splice(idx, 0, record);
       }
-      else{
+      else {
         table.rows.push(record);
       }
     }
@@ -84,7 +85,7 @@ export class Record {
     let record = this.record;
     let idx = -1;
     for (let i = 0; i < table.rows.length; i++) {
-      if(table.rows[i][table.sortBy] >= record.createdAt){
+      if (table.rows[i][table.sortBy] >= record.createdAt) {
         idx = i;
         break;
       }
