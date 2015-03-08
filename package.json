@@ -19,7 +19,7 @@
     "type": "git",
     "url": "http://github.com/kristianmandrup/aurelia-rethink-bindtable"
   },
-  "main": "aurelia-bindtable.js",
+  "main": "lib/bindtable.js",
   "scripts": {
     "test": "./node_modules/.bin/karma start --browsers Chrome --single-run"
   },  

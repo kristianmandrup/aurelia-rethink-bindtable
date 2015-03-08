@@ -1,6 +1,6 @@
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 
-import {createBindTable} from './aurelia-bindtable';
+import {createBindTable} from '../lib/bindtable';
 
 // import 'co' from 'co-mocha'; 
 
@@ -11,13 +11,14 @@ import {createBindTable} from './aurelia-bindtable';
 
 describe('bindTable', function(){  
   let mockSocket;      
+  let bindTable;
     
-  beforeEach(inject(function(bindTableFactory){
+  beforeEach(=> {
     mockSocket = io.connect();
     bindTable = createBindTable({
       socket: mockSocket 
     });
-  }));
+  });
 
   it('should provide an empty array', function(){
     var myTable = bindTable.table('myTable');
