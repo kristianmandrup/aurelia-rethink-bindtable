@@ -13,7 +13,7 @@ describe('bindTable', function(){
   let mockSocket;      
   let bindTable;
     
-  beforeEach(=> {
+  beforeEach( () => {
     mockSocket = io.connect();
     bindTable = BindTable.create({
       socket: mockSocket 

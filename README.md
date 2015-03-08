@@ -2,7 +2,11 @@
 
 Forked from https://github.com/knowthen/BindTable and tweaked to work for Aurelia ;)
 
-Uses [socket.io](https://github.com/Automattic/socket.io). 
+The bindings are realtime using [socket.io](https://github.com/Automattic/socket.io). 
+
+BindTable was inspired by [Build Realtime Apps](http://knowthen.com/episode-10-building-realtime-applications-just-got-easy/)
+
+See [Aurelia getting started](https://gist.github.com/kristianmandrup/e1099f54bbb7f6968af7) to get up and running!
 
 ### Binding ViewModels
 

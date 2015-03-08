@@ -10,7 +10,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jspm', 'jasmine-ajax', 'jasmine'],
+    frameworks: ['jspm', 'jasmine'],
 
     jspm: {
       // Edit this to your needs
@@ -30,8 +30,8 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'test/**/*.js': ['6to5'],
-      'src/**/*.js': ['6to5']
+      'test/**/*.js': ['babel'],
+      'src/**/*.js': ['babel']
     },
     '6to5Preprocessor': {
       options: {
