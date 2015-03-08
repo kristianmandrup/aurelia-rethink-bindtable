@@ -1,7 +1,11 @@
-# BindTable provides cool bindings to RethinkDB
-bindtable is an experimental library that binds a clientside object to rethinkdb queries.
+# Aurelia BindTable provides cool Aurelia bindings to RethinkDB
+
+Forked from https://github.com/knowthen/BindTable and tweaked to work for Aurelia ;)
+
 ```javascript
-// Example usage in angularjs
+
+// Example usage in Aurelia
+
 var app = angular.module('realtime', 
   ['btford.socket-io', 'bindtable']);
 
@@ -13,24 +17,33 @@ app.factory('bindTable', function(bindTableFactory, socket){
   return bindTableFactory({socket: socket});
 });
 
-app
-  .controller('QuestionsCtrl', questionsCtrl);
 
-function questionsCtrl($scope, bindTable){
-  
-  var questionTable = bindTable('question');
-  // calling bind(filter, limit, offset) creates a rows
-  // property that is synchronized with changes on the server side
-  questionTable.bind(null, 100);
+ViewModel class Questions
 
-  $scope.questions = questionTable.rows;
-  $scope.delete = questionTable.delete;
-  $scope.$on('$destroy', function(){
+```js
+import {BindTable} from 'aurelia-bindtable';
 
+export class Questions {
+
+export class Member {
+  static inject() { return [BindTable]; }
+
+  constructor(bindTable) {  
+    this.bindTable = bindTable;
+  }
+
+  activate() {
+    this.questionTable = bindTable('question');
+    // calling bind(filter, limit, offset) creates a rows
+    // property that is synchronized with changes on the server side
+    this.questionTable.bind(null, 100);
+
+    this.questions = questionTable.rows;
+    this.delete = questionTable.delete;
+
+  deactivate() {
     questionTable.unBind();
-    
-  });
-
+  }    
 }
 ```
 
