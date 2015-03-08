@@ -1,6 +1,6 @@
 import {createPromise} from './util';
 
-export class Record {
+export default class Record {
   constructor(table) {
     this.table = table.table;
     this.socket = table.socket;

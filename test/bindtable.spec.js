@@ -13,21 +13,34 @@ console.log('BindTable', BindTable);
 // function* 
 //  yield
 
+// http://jasmine.github.io/2.0/introduction.html
+
 describe('bindTable', function(){  
   var mockSocket;      
   var bindTable;
     
-  beforeEach( () => {
+  beforeEach(function(done) {
+    console.log('io in before each', io);
+    console.log('BindTable in before each', io);
+
     mockSocket = io.connect();
+    console.log('NEVER CALLED :(');
+    
+    console.log('mockSocket', mockSocket);
+
     bindTable = BindTable.create({
       socket: mockSocket 
     });
-    console.log('mockSocket', mockSocket);
+    
     console.log('bindTable', bindTable);
+    done();
   });
 
+  // Problem: `it` function is called before the `beforeEach` has completed!!!
+  // See http://www.htmlgoodies.com/beyond/javascript/stips/using-jasmine-2.0s-new-done-function-to-test-asynchronous-processes.html
+
   it('should provide an empty array', function(){
-    console.log('bindTable inside it', bindTable);
+    console.log('bindTable inside first "it"', bindTable);
 
     var myTable = bindTable.table('myTable');
     expect(myTable.rows.length).toEqual(0);

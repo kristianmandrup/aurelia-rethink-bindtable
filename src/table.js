@@ -1,6 +1,6 @@
 import {createPromise} from './util';
 
-export class Table {
+export default class Table {
   constructor(tableName, options) {
     this.socket = options.socket || BindTable.socket;
 

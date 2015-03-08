@@ -3,8 +3,8 @@
  * License: MIT
  */
 
-import {Record} from './record';
-import {Table}  from './table'; 
+import Record from './record';
+import Table  from './table'; 
 
 export function createBindTable (options) {
   new BindTable(options);
