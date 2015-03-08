@@ -1,25 +1,26 @@
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 
-describe('bindTable', function(){
+import {createBindTable} from './aurelia-bindtable';
 
-  beforeEach(module('bindtable'));
-  
-  var bindTable,
-      mockSocket,
-      rootScope;
-  
-  beforeEach(
-  )
-  
+// import 'co' from 'co-mocha'; 
+
+// TODO: Clean up!
+// Enable support for generators in Mocha tests
+// function* 
+//  yield
+
+describe('bindTable', function(){  
+  let mockSocket;      
+    
   beforeEach(inject(function(bindTableFactory){
     mockSocket = io.connect();
-    bindTable = bindTableFactory({
+    bindTable = createBindTable({
       socket: mockSocket 
     });
   }));
 
   it('should provide an empty array', function(){
-    var myTable = bindTable('myTable');
+    var myTable = bindTable.table('myTable');
     expect(myTable.rows.length).toEqual(0);
   });
 
@@ -28,7 +29,7 @@ describe('bindTable', function(){
       data.id = 123;
       cb(null, data);
     });
-    var myTable = bindTable('myTable');
+    var myTable = bindTable.table('myTable');
     myTable.add({name: 'james'})
       .then(function(record){
         expect(record.id).toEqual(123);
@@ -41,13 +42,12 @@ describe('bindTable', function(){
       data.id = 123;
       cb(null, data);
     });
-    var myTable = bindTable('myTable');
+    var myTable = bindTable.table('myTable');
     myTable.add({name: 'james'})
       .then(function(record){
         expect(myTable.rows.length).toEqual(1);
         done();
       });
-    // rootScope.$digest();
   });
 
   it('should update an existing record', function (done) {
@@ -69,7 +69,6 @@ describe('bindTable', function(){
         expect(updatedRecord.name).toEqual('James Moore');
         done();
       });
-    // rootScope.$digest();
   });
 
   it('should update an existing record in the rows array', function(done){
@@ -91,7 +90,6 @@ describe('bindTable', function(){
         expect(myTable.rows[0].name).toEqual('James Moore');
         done();
       });
-    // rootScope.$digest();
   });
 
   it('should not update other records in rows array', function(done){
@@ -117,7 +115,6 @@ describe('bindTable', function(){
         expect(myTable.rows[0].name).toEqual('Bob');
         done();
       });
-    // rootScope.$digest();
   });
 
   it('should delete a record', function(done){
@@ -141,7 +138,6 @@ describe('bindTable', function(){
         expect(myTable.rows.length).toEqual(1);
         done();
       });
-    // rootScope.$digest();
   });
 
   it('should update array automatically on outside update', function(done){
@@ -169,7 +165,5 @@ describe('bindTable', function(){
           done();
         })
       });
-
-    // rootScope.$digest();
   });
 });

@@ -3,7 +3,7 @@
  * License: MIT
  */
 
-export function bindTable (options) {
+export function createBindTable (options) {
   new BindTable(options);
 }
 
@@ -23,6 +23,10 @@ export class BindTable
     BindTable.socket  = options.socket;
   }
   
+  table(tableName, options) {
+    return new Table(tableName, options);
+  }
+
   static defaultSocket() {
     throw "Please define a static Record defaultSocket function";
   }
