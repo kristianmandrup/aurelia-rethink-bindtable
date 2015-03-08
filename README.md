@@ -18,9 +18,9 @@ app.factory('bindTable', function(bindTableFactory, socket){
 });
 
 
-ViewModel class Questions
+ViewModel `Questions`
 
-```js
+```javascript
 import {BindTable} from 'aurelia-bindtable';
 
 export class Questions {
