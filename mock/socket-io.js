@@ -1,12 +1,9 @@
-var io = {
+export default {
   connect: createMockSocketObject
 };
 
-export default io;
-
-function createMockSocketObject () {
-
-  var socket = {
+var createMockSocketObject = function() {
+  return {
     on: function (ev, fn) {
       (this._listeners[ev] = this._listeners[ev] || []).push(fn);
     },
@@ -46,6 +43,4 @@ function createMockSocketObject () {
     disconnect: function () {},
     connect: function () {}
   };
-
-  return socket;
 }
