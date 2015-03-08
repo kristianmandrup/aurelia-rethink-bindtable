@@ -4,7 +4,7 @@ Forked from https://github.com/knowthen/BindTable and tweaked to work for Aureli
 
 ```javascript
 
-// Example usage in Aurelia
+// Example config in Aurelia
 
 var app = angular.module('realtime', 
   ['btford.socket-io', 'bindtable']);
@@ -16,7 +16,7 @@ app.factory('socket', function(socketFactory){
 app.factory('bindTable', function(bindTableFactory, socket){
   return bindTableFactory({socket: socket});
 });
-
+```
 
 ViewModel `Questions`
 
