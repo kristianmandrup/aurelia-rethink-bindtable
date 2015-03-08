@@ -1,6 +1,6 @@
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 
-import {createBindTable} from '../lib/bindtable';
+import {BindTable} from '../lib/bindtable';
 
 // import 'co' from 'co-mocha'; 
 
@@ -15,7 +15,7 @@ describe('bindTable', function(){
     
   beforeEach(=> {
     mockSocket = io.connect();
-    bindTable = createBindTable({
+    bindTable = BindTable.create({
       socket: mockSocket 
     });
   });

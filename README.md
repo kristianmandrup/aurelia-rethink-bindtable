@@ -2,83 +2,45 @@
 
 Forked from https://github.com/knowthen/BindTable and tweaked to work for Aurelia ;)
 
-See https://gitter.im/Aurelia/Discuss?at=54e1f6efcfb73e3306d3d87e
+Uses [socket.io](https://github.com/Automattic/socket.io). 
 
-Example config in Aurelia
+### Binding ViewModels
 
-First add the plugin `'aurelia-bindtable'` in `main.js`
+See [Client API](http://socket.io/docs/client-api/)
 
-```javascript
-export function configure(aurelia) {
-  aurelia.use
-  ...
-  .plugin('aurelia-bindtable')
-```
+To configure a View-Model `Questions` that binds to the RethinkDB table `'question'` via bindtable over socket.io
 
-Then create the BindTable configurator
-
-
-```
-import {io} from 'socket.io-client';
-import {bindTableFactory} from 'aurelia-bindtable';
-
-export class BindTable
-  static inject() { return [bindTableFactory]; }
-  
-  constructor(bindTableFactory){
-    this.socket = io('http://localhost');
-    this.instance = bindTableFactory({socket: this.socket});
-  }
-});
-```
-
-`aurelia-bindtable` exports the function `bindTableFactory` which is injected.
-
-```
-export function bindTableFactory (options) {
-  ...
-}
-```
-
-
-
-Now create a ViewModel `Questions` that binds to the table `'question'` via bindtable ;)
-
-This can be further optimized by having the common bindtable logic in a separate subclass or module for inclusion in multiple table bindable ViewModel classes.
+PS: Here we assume we have a `filters` object, which can be injected and used.
 
 ```javascript
-import {BindTable} from 'aurelia-bindtable';
+import {Bindable} from 'aurelia-bindtable';
+import io from 'socket.io-client';
+import filters from './filters';
 
-export class Questions {
-
-export class Member {
-  static inject() { return [BindTable]; }
-
-  constructor(bindTable) {  
-    this.bindTable = bindTable;
+export class Questions extends Bindable {
+  constructor(filters) {  
+    let socket     = io('localhost');
+    this.filters   = filters;
+    this.bindTable = BindTable.create({socket: socket});
   }
 
-  activate() {
-    this.questionTable = bindTable('question');
-    // calling bind(filter, limit, offset) creates a rows
-    // property that is synchronized with changes on the server side
-    this.questionTable.bind(null, 100);
+  tableName: 'questions'
 
-    this.questions = questionTable.rows;
-    this.delete = questionTable.delete;
-
-  deactivate() {
-    questionTable.unBind();
-  }    
+  filter() {
+    this.table.bind(this.filters.easy, this.rowLimit);
+  }
 }
 ```
 
 That's it!!
 
+You could encapsulate this even further by subclassing `Bindable` and set your own defaults such as `socket`, filters, custom `activate` and `deactivate` hooks (such as adding logging) etc.
+
 ### Server side code
+
+See [Server API](http://socket.io/docs/server-api)
+
 ```javascript
-
-
 io.on('connection', function(socket){
 
   socket.on('question:findById', function(id, cb){
