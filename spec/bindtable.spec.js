@@ -21,11 +21,9 @@ describe('bindTable', function(){
     
   beforeEach(function(done) {
     console.log('io in before each', io);
-    console.log('BindTable in before each', io);
+    console.log('BindTable in before each', BindTable);
 
-    mockSocket = io.connect();
-    console.log('NEVER CALLED :(');
-    
+    mockSocket = io.connect();    
     console.log('mockSocket', mockSocket);
 
     bindTable = BindTable.create({
@@ -40,10 +38,15 @@ describe('bindTable', function(){
   // See http://www.htmlgoodies.com/beyond/javascript/stips/using-jasmine-2.0s-new-done-function-to-test-asynchronous-processes.html
 
   it('should provide an empty array', function(){
-    console.log('bindTable inside first "it"', bindTable);
+    waitsFor(function() {
+      return bindTable !== null;
+    }, "bindTable should be created, 1000");
 
-    var myTable = bindTable.table('myTable');
-    expect(myTable.rows.length).toEqual(0);
+    runs(function() {
+      console.log('bindTable inside first "it"', bindTable);  
+      var myTable = bindTable.table('myTable');
+      expect(myTable.rows.length).toEqual(0);
+    })    
   });
 
   // it('should add a record that is returned in promise', function(done){

@@ -6,11 +6,11 @@
 import Record from './record';
 import Table  from './table'; 
 
-export function createBindTable (options) {
+function createBindTable (options) {
   new BindTable(options);
 }
 
-export class BindTable {
+class BindTable {
   constructor(options) {
     if(!options || !options.socket){
       throw new Error('must supply a socket io connection');
@@ -33,5 +33,5 @@ export class BindTable {
   }
 }
 
-
+export {BindTable, createBindTable};
 

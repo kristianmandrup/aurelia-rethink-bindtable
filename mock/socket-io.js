@@ -1,8 +1,5 @@
-export default {
-  connect: createMockSocketObject
-};
-
 var createMockSocketObject = function() {
+  console.log("inside createMockSocketObject factory");
   return {
     on: function (ev, fn) {
       (this._listeners[ev] = this._listeners[ev] || []).push(fn);
@@ -44,3 +41,11 @@ var createMockSocketObject = function() {
     connect: function () {}
   };
 }
+
+console.log("createMockSocketObject", createMockSocketObject);
+
+var io = {
+  connect: createMockSocketObject
+};
+
+export default io;
