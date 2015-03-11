@@ -40,7 +40,7 @@ module.exports = function(config) {
       'test/**/*.js': ['babel'],
       'src/**/*.js': ['babel']
     },
-    '6to5Preprocessor': {
+    'babelPreprocessor': {
       options: {
         sourceMap: 'inline',
         modules: 'system',

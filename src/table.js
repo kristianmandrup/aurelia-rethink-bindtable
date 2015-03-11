@@ -1,8 +1,11 @@
-import {createPromise} from './util';
+import createPromise from './util';
+import Record from './record';
+
+console.log('imported Record', Record);
 
 export default class Table {
   constructor(tableName, options) {
-    this.socket = options.socket || BindTable.socket;
+    this.socket = options.socket;
 
     let table = {};
     table.rows = [];
@@ -30,44 +33,51 @@ export default class Table {
 
     table.listenEventName = tableName + ':changes';
     table.pkName    = options.pkName || 'id';
-    table.add       = this.addRecord(table);
-    table.update    = this.updateRecord(table);
-    table.findById  = this.findRecordById(table);
+
+    table.on        = this.on;
+    table.add       = this.add;
+    table.update    = this.update;
+    table.findById  = this.findById;
 
     table.save = (record) => {
       return record.id ? this.update(record) : this.add(record);
     }
 
-    table.delete = this.deleteRecord(table);
-    table.bind   = this.bind(table);
-    table.unBind = this.unBind(table);
+    table.delete = this.delete;
+    table.bind   = this.bind;
+    table.unBind = this.unBind;
+    table.socket = this.socket;
 
     this.table = table;
+
     return table;
   }
 
   on(record) {
+    console.log('Record', Record, this);
     return new Record(this, record);
   }
 
   update(record){
-    return on(record).update();
+    return this.on(record).update();
   }
 
   add(record){
-    return on(record).add();
+    var rec = this.on(record);
+    console.log('rec', rec)
+    return rec.add();
   }
 
-  deleteRecord(record) {
-    return on(record).delete();
+  delete(record) {
+    return this.on(record).delete();
   }
 
   upsertLocalRow(record){
-    return on(record).upsertLocalRow();
+    return this.on(record).upsertLocalRow();
   }
 
   findInsertIndex(record){
-    return on(record).findInsertIndex(); 
+    return this.on(record).findInsertIndex(); 
   }
 
   findById(id) {
@@ -160,7 +170,7 @@ export default class Table {
 
   unBind () {
     let socket = this.socket;    
-        let table = this.table;
+    let table = this.table;
     socket.emit(table.endChangesEventName);
     socket.removeListener(table.listenEventName, table.changeHandler);
     socket.removeListener('reconnect', table.reconnectHandler);

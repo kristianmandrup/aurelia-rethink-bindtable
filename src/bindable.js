@@ -1,10 +1,10 @@
-import {BindTable} from './bindtable';
+import {BindTable, createBindTable} from './bindtable';
 
 export class Bindable {
   static inject() { return [BindTable]; }
 
   constructor(bindTable, socket) {  
-    this.bindTable = BindTable.create(socket);
+    this.bindTable = createBindTable({socket:socket});
     super();
   }
 
