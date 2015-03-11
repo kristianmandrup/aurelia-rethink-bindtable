@@ -6,11 +6,11 @@
 import Record from './record';
 import Table  from './table'; 
 
-function createBindTable (options) {
+export function createBindTable(options) {
   new BindTable(options);
 }
 
-class BindTable {
+export class BindTable {
   constructor(options) {
     if(!options || !options.socket){
       throw new Error('must supply a socket io connection');
@@ -32,6 +32,3 @@ class BindTable {
     throw "Please define a static Record defaultSocket function";
   }
 }
-
-export {BindTable, createBindTable};
-
