@@ -71,9 +71,9 @@ export default class Table {
 
   add(record){
     this.log('add');
-    var rec = this.on(record);
-    console.log('rec', rec)
-    return rec.add();
+    var addPromise = this.on(record).add();
+    this.log('adding', addPromise);
+    return addPromise;
   }
 
   delete(record) {

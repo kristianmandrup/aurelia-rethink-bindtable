@@ -1,4 +1,4 @@
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 1500;
 
 import {BindTable, createBindTable} from '../src/bindtable';
 import io from '../mock/socket-io'; 
@@ -52,6 +52,7 @@ describe('bindTable', function(){
     var myTable = bindTable.table('myTable');
     myTable.add({name: 'james'})
       .then(function(record){
+        console.log('added', record);
         expect(record.id).toEqual(123);
         done();
       });

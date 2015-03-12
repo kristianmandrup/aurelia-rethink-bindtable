@@ -36,14 +36,19 @@ export default class Record {
     var promise = createPromise(function(reject, resolve) {      
       socket.emit( table.addEventName, record, function(err, record) {
         if (err){
+          console.log('rejecting', record, err);
           reject(err);
         }
         else {
+          console.log('upsert row', record);
           that.upsertLocalRow(table, record);
+          console.log('resolving', record);
           resolve(record);
         }
       });
     });
+
+    console.log('returning promise', promise);
     return promise;
   }  
 
@@ -87,8 +92,10 @@ export default class Record {
       else {
         console.log('table rows: push record', table.rows, record);
         table.rows.push(record);
+        console.log('pushed record');
       }
     }
+    this.end('upsertLocalRow');
   }
 
   findIndex (rows, pkName) {
@@ -124,6 +131,9 @@ export default class Record {
     console.log('Record: error - ', msg);
   }
 
+  end(msg) {
+    console.log('end', msg);
+  }
 
   log(msg) {
     console.log('Record:', msg);

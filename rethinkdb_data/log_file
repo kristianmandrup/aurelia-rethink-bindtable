@@ -1,0 +1,13 @@
+2015-03-12T20:45:49.718228000 30.134843s notice: Recursively removing directory /Users/kristianmandrup/repos/aurelia-bindtable/rethinkdb_data/tmp
+2015-03-12T20:45:49.720216000 30.136834s notice: Initializing directory /Users/kristianmandrup/repos/aurelia-bindtable/rethinkdb_data
+2015-03-12T20:45:49.720300000 30.136914s info: Creating a default database for your convenience. (This is because you ran 'rethinkdb' without 'create', 'serve', or '--join', and the directory '/Users/kristianmandrup/repos/aurelia-bindtable/rethinkdb_data' did not already exist or is empty.)
+2015-03-12T20:45:49.720327000 30.136940s notice: Running rethinkdb 1.16.2-1 (CLANG 4.2 (clang-425.0.28))...
+2015-03-12T20:45:49.740064000 30.156679s notice: Running on Darwin 14.1.0 x86_64
+2015-03-12T20:45:49.740113000 30.156726s notice: Loading data from directory /Users/kristianmandrup/repos/aurelia-bindtable/rethinkdb_data
+2015-03-12T20:45:49.870454000 30.287067s info: Automatically using cache size of 3387 MB
+2015-03-12T20:45:49.871538000 30.288151s notice: Listening for intracluster connections on port 29015
+2015-03-12T20:45:49.873103000 30.289716s notice: Listening for client driver connections on port 28015
+2015-03-12T20:45:49.873168000 30.289781s notice: Listening for administrative HTTP connections on port 8080
+2015-03-12T20:45:49.873173000 30.289786s notice: Listening on addresses: 127.0.0.1, ::1
+2015-03-12T20:45:49.873176000 30.289789s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2015-03-12T20:45:49.873180000 30.289793s notice: Server ready, "Kristians_MBP_ehj" 69a260f7-6000-4ebb-8448-a46680b1248b
