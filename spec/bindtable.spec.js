@@ -9,12 +9,42 @@ console.log('createBindTable', createBindTable);
 
 // // import 'co' from 'co-mocha'; 
 
-// // TODO: Clean up!
-// // Enable support for generators in Mocha tests
-// // function* 
-// //  yield
+// TODO: Clean up!
+// Enable support for generators in Mocha tests
+// function* 
+//   yield
 
-// // http://jasmine.github.io/2.0/introduction.html
+// Jasmine
+// http://jasmine.github.io/2.2/introduction.html
+// http://jasmine.github.io/2.2/introduction.html#section-Asynchronous_Support
+
+
+// http://www.html5rocks.com/en/tutorials/es6/promises/
+describe('Promise', function(){ 
+  it('resolve should resolve', function(done){
+    var promise = new Promise(function(reject, resolve) {      
+      resolve('ok');
+    });
+    return promise;
+    promise.then(function(res) {
+      expect(res).toEqual('ok')
+      done();  
+    })    
+  });
+
+  it('reject should reject', function(done){
+    var promise = new Promise(function(reject, resolve) {      
+      reject('err');
+    });
+    return promise;
+    promise.then(function(res) {
+      done();  
+    }, function(err) {
+      expect(err).toEqual('err')
+      done();
+    })    
+  });
+});
 
 describe('bindTable', function(){  
   var mockSocket;      
@@ -35,15 +65,6 @@ describe('bindTable', function(){
     done();
   });
 
-  // Problem: `it` function is called before the `beforeEach` has completed!!!
-  // See http://www.htmlgoodies.com/beyond/javascript/stips/using-jasmine-2.0s-new-done-function-to-test-asynchronous-processes.html
-
-  it('should provide an empty array', function(done){
-    var myTable = bindTable.table('myTable');
-    expect(myTable.rows.length).toEqual(0);
-    done();
-  });
-
   it('should add a record that is returned in promise', function(done){
     mockSocket.on('myTable:add', function(data, cb){
       data.id = 123;
@@ -57,6 +78,22 @@ describe('bindTable', function(){
         done();
       });
   });
+
+
+
+  // it('should add a record that is returned in promise', function(done){
+  //   mockSocket.on('myTable:add', function(data, cb){
+  //     data.id = 123;
+  //     cb(null, data);
+  //   });
+  //   var myTable = bindTable.table('myTable');
+  //   myTable.add({name: 'james'})
+  //     .then(function(record){
+  //       console.log('added', record);
+  //       expect(record.id).toEqual(123);
+  //       done();
+  //     });
+  // });
 
   // it('should add a record that is in rows array', function (done){
   //   mockSocket.on('myTable:add', function(data, cb){
