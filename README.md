@@ -20,6 +20,16 @@ Install module dependencies:
 `$ npm install && jspm install`
 `$ jspm dl-loader`
 
+### RethinkDB console
+
+You can play around with the RethinkDB tables using the built in web console. To start DB server:
+
+`rethinkdb`
+
+`open http://localhost:8080/#tables`
+
+Add a table and fill in the data. Then test it.
+
 ### Running tests
 
 ```
@@ -56,8 +66,8 @@ LOG: 'table rows: push record', [], Object{name: 'james', id: 123}
 ERROR: 'Potentially unhandled rejection [1] {"name":"james","id":123} (WARNING: non-Error used)'
 ```
 
-This might simply be due to the fact that I'm running the tests without having created a Table `myTable` in RethinkDB ;)
-Please TRY this at home!
+This error is caused by the `new Promise` not being used correctly somehow... please see the code and logs. Help me resolve this issue!
+Thanks :)
 
 ### Binding ViewModels
 
