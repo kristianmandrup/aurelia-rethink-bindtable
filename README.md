@@ -10,6 +10,13 @@ See [Aurelia getting started](https://gist.github.com/kristianmandrup/e1099f54bb
 
 ### Install
 
+Install global binaries:
+
+`$ npm install -g jspm karma-cli`
+`$ jspm init` 
+
+Install module dependencies:
+
 `$ npm install && jspm install`
 `$ jspm dl-loader`
 
@@ -26,12 +33,16 @@ INFO [Chrome 41.0.2272 (Mac OS X 10.10.2)]: Connected on socket cZNHR1B6WAacnOS_
 ..
 ```
 
-Currently a few errors related to new ES6 syntax and new constructs. 
-Please help out ;)
+*Trouble shooting*
 
-- [modules the ES6 way](http://24ways.org/2014/javascript-modules-the-es6-way/)
-- [Get started with ES6 modules](http://eviltrout.com/2014/05/03/getting-started-with-es6.html)
+```
+WARN [preprocess]: Can not load "babel", it is not registered!
+  Perhaps you are missing some plugin?
+```
 
+Install missing plugin:
+
+`npm install karma-babel-preprocessor`
 
 
 ### Binding ViewModels

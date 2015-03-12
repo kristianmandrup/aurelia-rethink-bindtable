@@ -22,7 +22,7 @@
   "main": "src/bindtable.js",
   "scripts": {
     "test": "./node_modules/.bin/karma start --browsers Chrome --single-run"
-  },  
+  },
   "jspm": {
     "main": "system/index",
     "format": "register",
@@ -32,8 +32,8 @@
     "dependencies": {
       "aurelia-binding": "^0.3.7",
       "aurelia-http-client": "^0.5.5",
-      "npm:socket.io": "^1.3.4",
-      "npm:rethinkdb": "^1.16"
+      "npm:rethinkdb": "npm:rethinkdb@^1.16",
+      "npm:socket.io": "npm:socket.io@^1.3.4"
     }
   },
   "devDependencies": {
