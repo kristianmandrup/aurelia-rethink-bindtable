@@ -9,6 +9,7 @@ var createMockSocketObject = function() {
       fn._once = true;
     },
     emit: function (ev, data) {
+      console.log('emit:', ev);
       if (this._listeners[ev]) {
         var args = arguments;
         this._listeners[ev].forEach(function (listener) {

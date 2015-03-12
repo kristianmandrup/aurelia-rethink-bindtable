@@ -22,8 +22,6 @@ Install module dependencies:
 
 ### Running tests
 
-`$ karma start`
-
 ```
 $ karma start
 WARN [karma]: Port 9876 in use
@@ -44,6 +42,22 @@ Install missing plugin:
 
 `npm install karma-babel-preprocessor`
 
+
+### Problems in Paradise
+
+
+`$ karma start`
+
+```
+LOG: 'Record:', 'add'
+LOG: 'emit:', 'myTable:add'
+...
+LOG: 'table rows: push record', [], Object{name: 'james', id: 123}
+ERROR: 'Potentially unhandled rejection [1] {"name":"james","id":123} (WARNING: non-Error used)'
+```
+
+This might simply be due to the fact that I'm running the tests without having created a Table `myTable` in RethinkDB ;)
+Please TRY this at home!
 
 ### Binding ViewModels
 

@@ -8,16 +8,17 @@ export default class Record {
   }
 
   update() {
+    this.log('update');
     let table = this.table;
     let record = this.record;
     let socket = this.socket;
     let that   = this;
     var promise = createPromise(function(reject, resolve) {      
-      socket.emit(table.updateEventName, record, function(err, result){
-        if(err){
+      socket.emit(table.updateEventName, record, function(err, result) {
+        if (err){
           reject(err);
         }
-        else{
+        else {
           that.upsertLocalRow(table, record);
           resolve(result);
         }
@@ -27,16 +28,17 @@ export default class Record {
   }
 
   add() {
+    this.log('add');
     let table = this.table;
     let record = this.record;
     let socket = this.socket;
     let that   = this;
     var promise = createPromise(function(reject, resolve) {      
-      socket.emit( table.addEventName, record, function(err, record){
-        if(err){
+      socket.emit( table.addEventName, record, function(err, record) {
+        if (err){
           reject(err);
         }
-        else{
+        else {
           that.upsertLocalRow(table, record);
           resolve(record);
         }
@@ -46,16 +48,18 @@ export default class Record {
   }  
 
   delete() {    
+    this.log('delete');
     let table = this.table;
     let record = this.record;
     let socket = this.socket;
     let that   = this;
     var promise = createPromise(function(reject, resolve) {      
       socket.emit(table.deleteEventName, record.id, function(err, result){
-        if(err){
+        if(err) {
+          this.error(err);
           reject(err);
         }
-        else{
+        else {
           that.deleteLocalRow(table, record.id);
           resolve(result);
         }
@@ -65,10 +69,9 @@ export default class Record {
   }  
 
   upsertLocalRow() {
+    this.log('upsertLocalRow');
     let table = this.table;
     let record = this.record;
-
-    // TODO: fix
     let idx = this.findIndex(table.rows, table.pkName);
 
     if (idx > -1) {
@@ -76,21 +79,24 @@ export default class Record {
     }
     else {
       idx = this.findInsertIndex(table, record);
+      this.log(`idx ${idx}`);
       if (idx > -1) {
+        console.log('table rows: slice record', idx, table.rows, record);
         table.rows.splice(idx, 0, record);
       }
       else {
+        console.log('table rows: push record', table.rows, record);
         table.rows.push(record);
       }
     }
-    return this;
   }
 
   findIndex (rows, pkName) {
+    this.log('findIndex', rows, pkName);
     rows = rows || [];
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i];
-      if(row[pkName] === this.record[pkName]){
+      if (row[pkName] === this.record[pkName]) {
         return i;
       }
     };
@@ -98,9 +104,13 @@ export default class Record {
   } 
 
   findInsertIndex() {
+    this.log('findInsertIndex');
     let table = this.table;
     let record = this.record;
     let idx = -1;
+    console.log('table', table, record);
+    console.log('rows', table.rows.length);
+
     for (let i = 0; i < table.rows.length; i++) {
       if (table.rows[i][table.sortBy] >= record.createdAt) {
         idx = i;
@@ -108,5 +118,14 @@ export default class Record {
       }
     }
     return idx;
+  }
+
+  error(msg) {
+    console.log('Record: error - ', msg);
+  }
+
+
+  log(msg) {
+    console.log('Record:', msg);
   }
 } 

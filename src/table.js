@@ -5,8 +5,9 @@ console.log('imported Record', Record);
 
 export default class Table {
   constructor(tableName, options) {
-    this.socket = options.socket;
+    console.log('create table', tableName);
 
+    this.socket = options.socket;
     let table = {};
     table.rows = [];
     table.tableName = tableName;
@@ -38,6 +39,7 @@ export default class Table {
     table.add       = this.add;
     table.update    = this.update;
     table.findById  = this.findById;
+    table.log       = this.log; 
 
     table.save = (record) => {
       return record.id ? this.update(record) : this.add(record);
@@ -50,37 +52,47 @@ export default class Table {
 
     this.table = table;
 
+    console.log('table created');
+
     return table;
   }
 
   on(record) {
-    console.log('Record', Record, this);
+    console.log('table.on', this)
+    this.log('on');
+    console.log('Record', record);
     return new Record(this, record);
   }
 
   update(record){
+    this.log('update');
     return this.on(record).update();
   }
 
   add(record){
+    this.log('add');
     var rec = this.on(record);
     console.log('rec', rec)
     return rec.add();
   }
 
   delete(record) {
+    this.log('delete');
     return this.on(record).delete();
   }
 
   upsertLocalRow(record){
+    this.log('upsertLocalRow');
     return this.on(record).upsertLocalRow();
   }
 
   findInsertIndex(record){
+    this.log('findInsertIndex');
     return this.on(record).findInsertIndex(); 
   }
 
   findById(id) {
+    this.log('findById');
     let table = this.table;
     let socket = this.socket;
     var promise = createPromise(function(reject, resolve) {      
@@ -97,11 +109,13 @@ export default class Table {
   }
 
   deleteLocalRow(id){
+    this.log('deleteLocalRow');
     let table = this.table;
     remove(table.rows, id, table.pkName)
   }
 
-  findIndex (rows, record, pkName) {
+  findIndex(rows, record, pkName) {
+    this.log('findIndex');
     rows = rows || [];
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i];
@@ -112,7 +126,8 @@ export default class Table {
     return -1;
   } 
 
-  remove (rows, id, pkName) {
+  remove(rows, id, pkName) {
+    this.log('remove');
     rows = rows || [];
     var length = rows.length;
     for (var i = 0; i < length; i++) {
@@ -125,6 +140,7 @@ export default class Table {
   }
 
   updateLocalRows(change){
+    this.log('updateLocalRows');
     let table = this.table;
     if(change.new_val === null){
       deleteLocalRow(table, change.old_val.id);
@@ -135,7 +151,8 @@ export default class Table {
   }
 
   bind(filter, limit, offset){
-    let socket = this.socket;
+    this.log('bind');
+    let socket        = this.socket;
     var changeOptions = {
       limit: limit || 10,
       offset: offset || 0, 
@@ -149,30 +166,39 @@ export default class Table {
   }
 
 
-  reconnect (options){
+  reconnect(options){
+    this.log('reconnect');
     let socket = this.socket;
-    let table = this.table;
+    let table  = this.table;
     socket.emit(table.startChangesEventName, options);
   }
 
   startWatchingChanges(options) {
+    this.log('startWatchingChanges');
     let socket = this.socket;
     let table = this.table;
     socket.emit(table.startChangesEventName, options);
   }
 
-  changeHandler (change, cb) {
+  changeHandler(change, cb) {
+    this.log('changeHandler');
     updateLocalRows(change)
     if(cb){
       cb(null);
     }
   }
 
-  unBind () {
+  unBind() {
+    this.log('unBind');
     let socket = this.socket;    
     let table = this.table;
     socket.emit(table.endChangesEventName);
     socket.removeListener(table.listenEventName, table.changeHandler);
     socket.removeListener('reconnect', table.reconnectHandler);
   }
+
+  log(msg) {
+    console.log('Table:', msg);
+  }
+
 }
