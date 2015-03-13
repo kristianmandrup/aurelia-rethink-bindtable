@@ -203,30 +203,32 @@ describe('bindTable', function(){
       });
   });
 
-  // it('should update array automatically on outside update', function(done){
-  //   mockSocket.on('myTable:add', function(data, cb){
-  //     data.id = 100;
-  //     cb(null, data);
-  //   });
+  it('should update array automatically on outside update', function(done){
+    mockSocket.on('myTable:add', function(data, cb){
+      data.id = 100;
+      cb(null, data);
+    });
 
-  //   var myTable = bindTable.table('myTable');
-  //   myTable.bind({}, 10, 0);
-  //   myTable.add({name: 'James'})
-  //     .then(function(record){
-  //       var changes = {
-  //         new_val: {
-  //           id: 100,
-  //           name: 'James Moore'
-  //         },
-  //         old_val: {
-  //           id: 100,
-  //           name: 'James'
-  //         }
-  //       };
-  //       mockSocket.emit('myTable:changes', changes, function(err, response){
-  //         expect(myTable.rows[0].name).toEqual('James Moore');
-  //         done();
-  //       })
-  //     });
-  // });
+    var myTable = bindTable.table('myTable');
+    console.log('myTable', myTable);
+    console.log('table', myTable.table);
+    myTable.bind({}, 10, 0);
+    myTable.add({name: 'James'})
+      .then(function(record){
+        var changes = {
+          new_val: {
+            id: 100,
+            name: 'James Moore'
+          },
+          old_val: {
+            id: 100,
+            name: 'James'
+          }
+        };
+        mockSocket.emit('myTable:changes', changes, function(err, response){
+          expect(myTable.rows[0].name).toEqual('James Moore');
+          done();
+        })
+      });
+  });
 });

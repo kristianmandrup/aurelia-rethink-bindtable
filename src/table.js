@@ -36,6 +36,7 @@ export default class Table {
     table.pkName    = options.pkName || 'id';
 
     table.on        = this.on;
+    table.startWatchingChanges = this.startWatchingChanges;
     table.add       = this.add;
     table.update    = this.update;
     table.findById  = this.findById;
@@ -52,7 +53,7 @@ export default class Table {
 
     this.table = table;
 
-    console.log('table created');
+    console.log('table created', this.table);
 
     return table;
   }
@@ -143,24 +144,30 @@ export default class Table {
     this.log('updateLocalRows');
     let table = this.table;
     if(change.new_val === null){
-      deleteLocalRow(table, change.old_val.id);
+      this.deleteLocalRow(table, change.old_val.id);
     }
     else{
-      upsertLocalRow(table, change.new_val);
+      this.upsertLocalRow(table, change.new_val);
     }
   }
 
   bind(filter, limit, offset){
     this.log('bind');
     let socket        = this.socket;
+    let table         = this.table;
     var changeOptions = {
       limit: limit || 10,
       offset: offset || 0, 
       filter: filter || {}
     };
-    startWatchingChanges(table, changeOptions);
-    table.changeHandler = changeHandler(table)
-    table.reconnectHandler = reconnect(table, changeOptions);
+    console.log('this', this);
+    console.log('table', table);
+    console.log('startWatchingChanges', this.startWatchingChanges);
+
+    this.startWatchingChanges(changeOptions);
+    table.changeHandler = this.changeHandler(table)
+    table.reconnectHandler = this.reconnect(changeOptions);
+
     socket.on(table.listenEventName, table.changeHandler);
     socket.on('reconnect', table.reconnectHandler);
   }
@@ -173,16 +180,16 @@ export default class Table {
     socket.emit(table.startChangesEventName, options);
   }
 
-  startWatchingChanges(options) {
-    this.log('startWatchingChanges');
+  startWatchingChanges(options) {    
     let socket = this.socket;
     let table = this.table;
+    this.log('startWatchingChanges', table);
     socket.emit(table.startChangesEventName, options);
   }
 
   changeHandler(change, cb) {
     this.log('changeHandler');
-    updateLocalRows(change)
+    this.updateLocalRows(change)
     if(cb){
       cb(null);
     }

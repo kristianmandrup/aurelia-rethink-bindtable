@@ -65,12 +65,17 @@ export default class Record {
           reject(err);
         }
         else {
-          that.deleteLocalRow(table, record.id);
+          that.deleteLocalRow(record.id);
           resolve(result);
         }
       });
     });
     return promise;
+  }
+
+  deleteLocalRow(id){
+    let table = this.table;
+    this.remove(table.rows, id, table.pkName)
   }
 
   upsertLocalRow() {
@@ -108,6 +113,18 @@ export default class Record {
       }
     };
     return -1;
+  }
+
+  remove(rows, id, pkName) {
+    rows = rows || [];
+    var length = rows.length;
+    for (var i = 0; i < length; i++) {
+      var row = rows[i];
+      if(row[pkName] === id){
+        rows.splice(i, 1);
+        length--;
+      }
+    };
   }
 
   findInsertIndex() {

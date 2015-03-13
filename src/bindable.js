@@ -13,7 +13,7 @@ export class Bindable {
   }
 
   get rowLimit() {   
-    100
+    return 100;
   }  
 
   filter() {
@@ -23,7 +23,7 @@ export class Bindable {
   }
 
   activate() {
-    this.table = bindTable(this.tableName);
+    this.table = this.bindTable.table(this.tableName);
 
     this.rows = table.rows;
     this.delete = table.delete;
@@ -32,6 +32,6 @@ export class Bindable {
   }
 
   deactivate() {
-    table.unBind();
+    this.table.unBind();
   }    
 }
