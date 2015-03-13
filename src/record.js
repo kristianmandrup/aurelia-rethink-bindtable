@@ -2,6 +2,7 @@ import createPromise from './util';
 
 export default class Record {
   constructor(table, record) {
+    this.type = 'Record';
     this.table = table;
     this.record = record;
     this.socket = table.socket;
@@ -19,7 +20,7 @@ export default class Record {
           reject(err);
         }
         else {
-          that.upsertLocalRow(table, record);
+          that.upsertLocalRow();
           resolve(result);
         }
       });
@@ -41,7 +42,7 @@ export default class Record {
         }
         else {
           console.log('upsert row', record);
-          that.upsertLocalRow(table, record);
+          that.upsertLocalRow();
           console.log('resolving', record);
           resolve(record);
         }
@@ -74,6 +75,7 @@ export default class Record {
   }
 
   deleteLocalRow(id){
+    this.log('deleteLocalRow', id);
     let table = this.table;
     this.remove(table.rows, id, table.pkName)
   }
@@ -88,7 +90,7 @@ export default class Record {
       table.rows[idx] = record;
     }
     else {
-      idx = this.findInsertIndex(table, record);
+      idx = this.findInsertIndex();
       this.log(`idx ${idx}`);
       if (idx > -1) {
         console.log('table rows: slice record', idx, table.rows, record);
@@ -96,6 +98,10 @@ export default class Record {
       }
       else {
         console.log('table rows: push record', table.rows, record);
+        if (record === undefined) {
+          console.log('WARNING: record not pushed, undefined!');
+          return;
+        }
         table.rows.push(record);
         console.log('pushed record');
       }
@@ -105,10 +111,16 @@ export default class Record {
 
   findIndex (rows, pkName) {
     this.log('findIndex', rows, pkName);
+    let record = this.record;
     rows = rows || [];
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i];
-      if (row[pkName] === this.record[pkName]) {
+      if (row === undefined) {
+        console.log('WARNING: row', i, 'is undefined for', rows);
+        return -1;
+      }      
+      console.log('find match', rows, row, i, pkName, record)
+      if (row[pkName] === record[pkName]) {
         return i;
       }
     };
@@ -116,6 +128,7 @@ export default class Record {
   }
 
   remove(rows, id, pkName) {
+    this.log('remove', rows, id);
     rows = rows || [];
     var length = rows.length;
     for (var i = 0; i < length; i++) {
@@ -132,11 +145,25 @@ export default class Record {
     let table = this.table;
     let record = this.record;
     let idx = -1;
-    console.log('table', table, record);
-    console.log('rows', table.rows.length);
+    console.log('rows', table.rows);
+    var createdAt;
+
+    if (record === undefined) {
+      console.log('record is undefined for', this);
+      return idx;
+    } else {
+      console.log('record', typeof(record), record);
+      createdAt = record.createdAt;
+      console.log('createdAt', createdAt);
+    }
 
     for (let i = 0; i < table.rows.length; i++) {
-      if (table.rows[i][table.sortBy] >= record.createdAt) {
+      var row = table.rows[i];
+      if (row === undefined) {
+        continue;
+      }
+      var rowCreateDate = row[table.sortBy];
+      if (rowCreateDate >= createdAt) {
         idx = i;
         break;
       }

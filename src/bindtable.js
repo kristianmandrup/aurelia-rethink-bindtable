@@ -17,6 +17,7 @@ export class BindTable {
     }
     options.socket    = options.socket || BindTable.defaultSocket();
     this.options      = options;
+    this.type         = 'BindTable';
     BindTable.options = options;
 
     BindTable.socket  = options.socket;
