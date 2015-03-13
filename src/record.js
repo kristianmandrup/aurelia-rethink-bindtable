@@ -13,7 +13,7 @@ export default class Record {
     let record = this.record;
     let socket = this.socket;
     let that   = this;
-    var promise = createPromise(function(reject, resolve) {      
+    var promise = createPromise(function(resolve, reject) {      
       socket.emit(table.updateEventName, record, function(err, result) {
         if (err){
           reject(err);
@@ -22,7 +22,7 @@ export default class Record {
           that.upsertLocalRow(table, record);
           resolve(result);
         }
-      });      
+      });
     });
     return promise;
   }
@@ -33,7 +33,7 @@ export default class Record {
     let record = this.record;
     let socket = this.socket;
     let that   = this;
-    var promise = createPromise(function(reject, resolve) {      
+    var promise = createPromise(function(resolve, reject) {
       socket.emit( table.addEventName, record, function(err, record) {
         if (err){
           console.log('rejecting', record, err);
@@ -50,15 +50,15 @@ export default class Record {
 
     console.log('returning promise', promise);
     return promise;
-  }  
+  }
 
-  delete() {    
+  delete() {
     this.log('delete');
     let table = this.table;
     let record = this.record;
     let socket = this.socket;
     let that   = this;
-    var promise = createPromise(function(reject, resolve) {      
+    var promise = createPromise(function(resolve, reject) {
       socket.emit(table.deleteEventName, record.id, function(err, result){
         if(err) {
           this.error(err);
@@ -71,7 +71,7 @@ export default class Record {
       });
     });
     return promise;
-  }  
+  }
 
   upsertLocalRow() {
     this.log('upsertLocalRow');
@@ -108,7 +108,7 @@ export default class Record {
       }
     };
     return -1;
-  } 
+  }
 
   findInsertIndex() {
     this.log('findInsertIndex');
@@ -138,4 +138,4 @@ export default class Record {
   log(msg) {
     console.log('Record:', msg);
   }
-} 
+}
