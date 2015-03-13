@@ -1,17 +1,17 @@
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1500;
 
 import {BindTable, createBindTable} from '../src/bindtable';
-import io from '../mock/socket-io'; 
+import io from '../mock/socket-io';
 
 console.log('IO', io);
 console.log('BindTable', BindTable);
 console.log('createBindTable', createBindTable);
 
-// // import 'co' from 'co-mocha'; 
+// // import 'co' from 'co-mocha';
 
 // TODO: Clean up!
 // Enable support for generators in Mocha tests
-// function* 
+// function*
 //   yield
 
 // Jasmine
@@ -20,47 +20,47 @@ console.log('createBindTable', createBindTable);
 
 
 // http://www.html5rocks.com/en/tutorials/es6/promises/
-describe('Promise', function(){ 
+describe('Promise', function(){
   it('resolve should resolve', function(done){
-    var promise = new Promise(function(reject, resolve) {      
+    var promise = new Promise(function(resolve, reject) {
       resolve('ok');
     });
-    return promise;
+    // return promise;
     promise.then(function(res) {
       expect(res).toEqual('ok')
-      done();  
-    })    
+      done();
+    })
   });
 
   it('reject should reject', function(done){
-    var promise = new Promise(function(reject, resolve) {      
+    var promise = new Promise(function(resolve, reject) {
       reject('err');
     });
-    return promise;
+    // return promise;
     promise.then(function(res) {
-      done();  
+      done();
     }, function(err) {
       expect(err).toEqual('err')
       done();
-    })    
+    })
   });
 });
 
-describe('bindTable', function(){  
-  var mockSocket;      
+describe('bindTable', function(){
+  var mockSocket;
   var bindTable;
 
   beforeEach(function(done) {
     console.log('io in before each', io);
     console.log('BindTable in before each', BindTable);
 
-    mockSocket = io.connect();    
+    mockSocket = io.connect();
     console.log('mockSocket', mockSocket);
 
     bindTable = createBindTable({
-      socket: mockSocket 
+      socket: mockSocket
     });
-    
+
     console.log('bindTable', bindTable);
     done();
   });
@@ -116,7 +116,7 @@ describe('bindTable', function(){
   //   mockSocket.on('myTable:update', function(data, cb){
   //     cb(null, data);
   //   });
-    
+
   //   var myTable = bindTable('myTable');
   //   myTable.add({name: 'james'})
   //     .then(function(record){
@@ -137,7 +137,7 @@ describe('bindTable', function(){
   //   mockSocket.on('myTable:update', function(data, cb){
   //     cb(null, data);
   //   });
-    
+
   //   var myTable = bindTable('myTable');
   //   myTable.add({name: 'james'})
   //     .then(function(record){
@@ -159,7 +159,7 @@ describe('bindTable', function(){
   //   mockSocket.on('myTable:update', function(data, cb){
   //     cb(null, data);
   //   });
-    
+
   //   var myTable = bindTable('myTable');
   //   myTable.add({name: 'Bob'})
   //     .then(function(record){
