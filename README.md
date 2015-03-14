@@ -52,23 +52,6 @@ Install missing plugin:
 
 `npm install karma-babel-preprocessor`
 
-
-### Problems in Paradise
-
-
-`$ karma start`
-
-```
-LOG: 'Record:', 'add'
-LOG: 'emit:', 'myTable:add'
-...
-LOG: 'table rows: push record', [], Object{name: 'james', id: 123}
-ERROR: 'Potentially unhandled rejection [1] {"name":"james","id":123} (WARNING: non-Error used)'
-```
-
-This error is caused by the `new Promise` not being used correctly somehow... please see the code and logs. Help me resolve this issue!
-Thanks :)
-
 ### Binding ViewModels
 
 See [Client API](http://socket.io/docs/client-api/)
@@ -97,9 +80,21 @@ export class Questions extends Bindable {
 }
 ```
 
-That's it!!
+That's it!! 
 
-You could encapsulate this even further by subclassing `Bindable` and set your own defaults such as `socket`, filters, custom `activate` and `deactivate` hooks (such as adding logging) etc.
+Now you can bind to the variable `rows`.
+You can use the variable `table` to directly interact with table methods such as adding or upserting rows etc. 
+
+```
+table.delete(record)
+table.add(record)
+table.update(record) // upsert: ie. insert or update
+table.findById(id)
+```
+
+You can enable logging by passing `logging: true` to the `BindTable` constructor.
+
+`BindTable.create({socket: socket, logging: true});`
 
 ### Server side code
 

@@ -1,6 +1,10 @@
-var createMockSocketObject = function() {
-  console.log("inside createMockSocketObject factory");
+var createMockSocketObject = function(options = {logging: false}) {
   return {
+    logging: options.logging,
+    log: function (msg) {
+      if (this.logging)
+        console.log('Socket:', msg);
+    },
     on: function (ev, fn) {
       (this._listeners[ev] = this._listeners[ev] || []).push(fn);
     },
@@ -9,7 +13,7 @@ var createMockSocketObject = function() {
       fn._once = true;
     },
     emit: function (ev, data) {
-      console.log('emit:', ev);
+      this.log('emit:', ev);
       if (this._listeners[ev]) {
         var args = arguments;
         this._listeners[ev].forEach(function (listener) {
@@ -22,6 +26,7 @@ var createMockSocketObject = function() {
     },
     _listeners: {},
     removeListener: function (ev, fn) {
+      this.log(`removeListener: ${ev}`);
       if (fn) {
         var index = this._listeners[ev].indexOf(fn);
         if (index > -1) {
@@ -32,6 +37,7 @@ var createMockSocketObject = function() {
       }
     },
     removeAllListeners: function (ev) {
+      this.log(`removeAllListeners: ${ev}`);
       if (ev) {
         delete this._listeners[ev];
       } else {
@@ -42,8 +48,6 @@ var createMockSocketObject = function() {
     connect: function () {}
   };
 }
-
-console.log("createMockSocketObject", createMockSocketObject);
 
 var io = {
   connect: createMockSocketObject

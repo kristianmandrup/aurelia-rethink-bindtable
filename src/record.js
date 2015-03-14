@@ -1,11 +1,14 @@
 import createPromise from './util';
 
 export default class Record {
-  constructor(table, record) {
+  constructor(table, record, options = {logging: false}) {
+    this.logging = options.logging;
     this.type = 'Record';
     this.table = table;
     this.record = record;
     this.socket = table.socket;
+    if (!(this.socket && this.socket.emit))
+      this.error('socket not defined')
   }
 
   update() {
@@ -28,13 +31,12 @@ export default class Record {
     let emitAdd = (resolve, reject) => {
       this.socket.emit(this.table.addEventName, this.record, (err, result) => {
         if (err){
-          console.log('rejecting', this.record, err);
+          this.log('rejecting', this.record, err);
           reject(err);
           return;
         }
-        console.log('upsert row', this.record);
+        this.log('upsert row', this.record);
         this.upsertLocalRow();
-        console.log('resolving', this.record);
         resolve(result);
       });
     };
@@ -75,21 +77,19 @@ export default class Record {
     else {
       idx = this.findInsertIndex();
       this.log(`idx ${idx}`);
+      if (record === undefined) {
+        this.warn('record not upserted: undefined!');
+        return;
+      }
       if (idx > -1) {
-        console.log('table rows: slice record', idx, table.rows, record);
+        this.log('table rows: slice record', idx, table.rows, record);
         table.rows.splice(idx, 0, record);
       }
       else {
-        console.log('table rows: push record', table.rows, record);
-        if (record === undefined) {
-          console.log('WARNING: record not pushed, undefined!');
-          return;
-        }
+        this.log('table rows: push record', table.rows, record);
         table.rows.push(record);
-        console.log('pushed record');
       }
     }
-    this.end('upsertLocalRow');
   }
 
   findIndex (rows, pkName) {
@@ -99,10 +99,9 @@ export default class Record {
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i];
       if (row === undefined) {
-        console.log('WARNING: row', i, 'is undefined for', rows);
+        this.warn('row', i, 'is undefined for', rows);
         return -1;
       }
-      console.log('find match', rows, row, i, pkName, record)
       if (row[pkName] === record[pkName]) {
         return i;
       }
@@ -128,16 +127,13 @@ export default class Record {
     let table = this.table;
     let record = this.record;
     let idx = -1;
-    console.log('rows', table.rows);
-    var createdAt;
+    var recordCreatedAt;
 
     if (record === undefined) {
-      console.log('record is undefined for', this);
+      this.warn('record is undefined for', this);
       return idx;
     } else {
-      console.log('record', typeof(record), record);
-      createdAt = record.createdAt;
-      console.log('createdAt', createdAt);
+      recordCreatedAt = record.createdAt;
     }
 
     for (let i = 0; i < table.rows.length; i++) {
@@ -145,8 +141,8 @@ export default class Record {
       if (row === undefined) {
         continue;
       }
-      var rowCreateDate = row[table.sortBy];
-      if (rowCreateDate >= createdAt) {
+      var rowCreatedDate = row[table.sortBy];
+      if (rowCreatedDate >= recordCreatedAt) {
         idx = i;
         break;
       }
@@ -154,15 +150,19 @@ export default class Record {
     return idx;
   }
 
-  error(msg) {
-    console.log('Record: error - ', msg);
+  warn(msg) {
+    if (this.logging)
+      this.log(`[WARNING] ${msg}`);
   }
 
-  end(msg) {
-    console.log('end', msg);
+  error(msg) {
+    if (this.logging)
+      this.log(`[ERROR] ${msg}`);
+      throw `Record: ${msg}`;
   }
 
   log(msg) {
-    console.log('Record:', msg);
+    if (this.logging)
+      console.log('Record:', msg);
   }
 }

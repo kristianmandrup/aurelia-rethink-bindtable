@@ -1,13 +1,16 @@
 import createPromise from './util';
 import Record from './record';
 
-//console.log('imported Record', Record);
-
 export default class Table {
-  constructor(tableName, options = {}) {
-    //console.log('create table', tableName);
+  constructor(tableName, options = {logging: false}) {
+    this.logging = options.logging;
 
     this.socket = options.socket;
+    if (!(this.socket && this.socket.emit)) {
+      console.log(options);
+      this.error('socket not defined');
+    }
+
     let table = {};
     table.type = 'table';
     table.rows = [];
@@ -37,12 +40,13 @@ export default class Table {
     table.listenEventName = tableName + ':changes';
     table.pkName    = options.pkName || 'id';
 
+    // TODO: Refactor, this looks like "madness"!
     table.on        = this.on;
     table.startWatchingChanges = this.startWatchingChanges;
     table.changeHandler        = this.changeHandler;
     table.updateLocalRows      = this.updateLocalRows;
     table.upsertLocalRow       = this.upsertLocalRow;
-    table.reconnect           = this.reconnect;
+    table.reconnect            = this.reconnect;
 
     table.add       = this.add;
     table.update    = this.update;
@@ -51,7 +55,6 @@ export default class Table {
     table.table     = table;
 
     table.save = (record) => {
-      //console.log('Save:', record);
       return record.id ? this.update(record) : this.add(record);
     }
 
@@ -62,15 +65,13 @@ export default class Table {
 
     this.table = table;
 
-    //console.log('table created', this.table);
-
     return table;
   }
 
   on(record) {
     this.log('on');
     //console.log('Record', record);
-    return new Record(this, record);
+    return new Record(this, record, this.options);
   }
 
   update(record){
@@ -224,8 +225,19 @@ export default class Table {
     socket.removeListener('reconnect', table.reconnectHandler);
   }
 
-  log(msg) {
-    console.log('Table:', msg);
+  warn(msg) {
+    if (this.logging)
+      this.log(`[WARNING] ${msg}`);
   }
 
+  error(msg) {
+    if (this.logging)
+      this.log(`[ERROR] ${msg}`);
+      throw `Table: ${msg}`;
+  }
+
+  log(msg) {
+    if (this.logging)
+      console.log('Table:', msg);
+  }
 }
