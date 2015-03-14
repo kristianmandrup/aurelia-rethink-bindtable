@@ -4,25 +4,18 @@
  */
 
 import Record from './record';
-import Table  from './table'; 
+import Table  from './table';
 
-export function createBindTable(options) {
-  return new BindTable(options);
-}
-
-export class BindTable {
-  constructor(options) {
-    if(!options || !options.socket){
+export default class BindTable {
+  constructor(options = {}) {
+    if (!options.socket) {
       throw new Error('must supply a socket io connection');
     }
-    options.socket    = options.socket || BindTable.defaultSocket();
+    options.socket    = options.socket;
     this.options      = options;
     this.type         = 'BindTable';
-    BindTable.options = options;
-
-    BindTable.socket  = options.socket;
   }
-  
+
   table(tableName, options) {
     options = options || this.options;
     options.socket    = options.socket || BindTable.socket;
@@ -31,9 +24,5 @@ export class BindTable {
 
   static create(options) {
     return new BindTable(options);
-  }
-
-  static defaultSocket() {
-    throw "Please define a static Record defaultSocket function";
   }
 }

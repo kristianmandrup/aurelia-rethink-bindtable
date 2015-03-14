@@ -1,20 +1,20 @@
-import {BindTable, createBindTable} from './bindtable';
+import BindTable from './bindtable';
 
 export class Bindable {
   static inject() { return [BindTable]; }
 
-  constructor(bindTable, socket) {  
-    this.bindTable = createBindTable({socket:socket});
+  constructor(bindTable, socket) {
+    this.bindTable = BindTable.create({socket:socket});
     super();
   }
 
-  get tableName() {   
+  get tableName() {
     throw "tableName not defined";
   }
 
-  get rowLimit() {   
+  get rowLimit() {
     return 100;
-  }  
+  }
 
   filter() {
     // calling bind(filter, limit, offset) creates a rows
@@ -33,5 +33,5 @@ export class Bindable {
 
   deactivate() {
     this.table.unBind();
-  }    
+  }
 }

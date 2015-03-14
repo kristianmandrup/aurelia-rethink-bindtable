@@ -10,68 +10,51 @@ export default class Record {
 
   update() {
     this.log('update');
-    let table = this.table;
-    let record = this.record;
-    let socket = this.socket;
-    let that   = this;
-    var promise = createPromise(function(resolve, reject) {      
-      socket.emit(table.updateEventName, record, function(err, result) {
-        if (err){
+    let emitUpdate = (resolve, reject) => {
+      this.socket.emit(this.table.updateEventName, this.record, (err, result) => {
+        if (err) {
           reject(err);
+          return;
         }
-        else {
-          that.upsertLocalRow();
-          resolve(result);
-        }
+        this.upsertLocalRow();
+        resolve(result);
       });
-    });
-    return promise;
+    };
+    return createPromise(emitUpdate);
   }
 
   add() {
     this.log('add');
-    let table = this.table;
-    let record = this.record;
-    let socket = this.socket;
-    let that   = this;
-    var promise = createPromise(function(resolve, reject) {
-      socket.emit( table.addEventName, record, function(err, record) {
+    let emitAdd = (resolve, reject) => {
+      this.socket.emit(this.table.addEventName, this.record, (err, result) => {
         if (err){
-          console.log('rejecting', record, err);
+          console.log('rejecting', this.record, err);
           reject(err);
+          return;
         }
-        else {
-          console.log('upsert row', record);
-          that.upsertLocalRow();
-          console.log('resolving', record);
-          resolve(record);
-        }
+        console.log('upsert row', this.record);
+        this.upsertLocalRow();
+        console.log('resolving', this.record);
+        resolve(result);
       });
-    });
-
-    console.log('returning promise', promise);
-    return promise;
+    };
+    return createPromise(emitAdd);
   }
 
   delete() {
     this.log('delete');
-    let table = this.table;
-    let record = this.record;
-    let socket = this.socket;
-    let that   = this;
-    var promise = createPromise(function(resolve, reject) {
-      socket.emit(table.deleteEventName, record.id, function(err, result){
-        if(err) {
+    let emitDelete = (resolve, reject) => {
+      this.socket.emit(this.table.deleteEventName, this.record.id, (err, result) => {
+        if (err) {
           this.error(err);
           reject(err);
+          return;
         }
-        else {
-          that.deleteLocalRow(record.id);
-          resolve(result);
-        }
+        this.deleteLocalRow(this.record.id);
+        resolve(result);
       });
-    });
-    return promise;
+    };
+    return createPromise(emitDelete);
   }
 
   deleteLocalRow(id){
@@ -118,7 +101,7 @@ export default class Record {
       if (row === undefined) {
         console.log('WARNING: row', i, 'is undefined for', rows);
         return -1;
-      }      
+      }
       console.log('find match', rows, row, i, pkName, record)
       if (row[pkName] === record[pkName]) {
         return i;

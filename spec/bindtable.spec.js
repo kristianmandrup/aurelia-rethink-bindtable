@@ -1,234 +1,189 @@
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1500;
 
-import {BindTable, createBindTable} from '../src/bindtable';
+import BindTable from '../src/bindtable';
 import io from '../mock/socket-io';
 
-console.log('IO', io);
-console.log('BindTable', BindTable);
-console.log('createBindTable', createBindTable);
-
-// // import 'co' from 'co-mocha';
-
-// TODO: Clean up!
-// Enable support for generators in Mocha tests
-// function*
-//   yield
-
-// Jasmine
-// http://jasmine.github.io/2.2/introduction.html
-// http://jasmine.github.io/2.2/introduction.html#section-Asynchronous_Support
-
-
-// http://www.html5rocks.com/en/tutorials/es6/promises/
-describe('Promise', function(){
-  it('resolve should resolve', function(done){
-    var promise = new Promise(function(resolve, reject) {
-      resolve('ok');
-    });
-    // return promise;
-    promise.then(function(res) {
-      expect(res).toEqual('ok')
-      done();
-    })
-  });
-
-  it('reject should reject', function(done){
-    var promise = new Promise(function(resolve, reject) {
-      reject('err');
-    });
-    // return promise;
-    promise.then(function(res) {
-      done();
-    }, function(err) {
-      expect(err).toEqual('err')
-      done();
-    })
-  });
-});
-
-describe('bindTable', function(){
+describe('BindTable', () => {
   var mockSocket;
   var bindTable;
 
-  beforeEach(function(done) {
-    console.log('io in before each', io);
-    console.log('BindTable in before each', BindTable);
-
+  beforeEach(() => {
     mockSocket = io.connect();
-    console.log('mockSocket', mockSocket);
-
-    bindTable = createBindTable({
-      socket: mockSocket
-    });
-
-    console.log('bindTable', bindTable);
-    done();
+    bindTable = BindTable.create({socket: mockSocket});
   });
 
-  it('should add a record that is returned in promise', function(done){
-    mockSocket.on('myTable:add', function(data, cb){
+  afterEach(() => {
+    mockSocket = null;
+    bindTable = null;
+  });
+
+  it('should add a record that is returned in promise', done => {
+    mockSocket.on('myTable:add', (data, cb) => {
       data.id = 123;
       cb(null, data);
     });
-    var myTable = bindTable.table('myTable');
-    myTable.add({name: 'james'})
-      .then(function(record){
-        console.log('added', record);
-        expect(record.id).toEqual(123);
-        done();
-      });
+
+    let assert = record => {
+      expect(record.id).toEqual(123);
+      done();
+    };
+
+    bindTable.table('myTable')
+             .add({name: 'james'})
+             .then(assert);
   });
 
-
-
-  it('should add a record that is returned in promise', function(done){
-    mockSocket.on('myTable:add', function(data, cb){
+  it('should add a record that is returned in promise', (done) => {
+    mockSocket.on('myTable:add', (data, cb) => {
       data.id = 123;
       cb(null, data);
     });
-    var myTable = bindTable.table('myTable');
-    myTable.add({name: 'james'})
-      .then(function(record){
-        console.log('added', record);
-        expect(record.id).toEqual(123);
-        done();
-      });
+
+    let assert = record => {
+      expect(record.id).toEqual(123);
+      done();
+    };
+
+    bindTable.table('myTable')
+             .add({name: 'james'})
+             .then(assert);
   });
 
-  it('should add a record that is in rows array', function (done){
-    mockSocket.on('myTable:add', function(data, cb){
+  it('should add a record that is in rows array', (done) => {
+    mockSocket.on('myTable:add', (data, cb) => {
       data.id = 123;
       cb(null, data);
     });
+
+    let assert = record => {
+      expect(myTable.rows.length).toEqual(1);
+      done();
+    };
+
     var myTable = bindTable.table('myTable');
     myTable.add({name: 'james'})
-      .then(function(record){
-        expect(myTable.rows.length).toEqual(1);
-        done();
-      });
+           .then(assert);
   });
 
-  it('should update an existing record', function (done) {
-    mockSocket.on('myTable:add', function(data, cb){
+  it('should update an existing record', (done) => {
+    mockSocket.on('myTable:update', (data, cb) => cb(null, data));
+    mockSocket.on('myTable:add', (data, cb) => {
       data.id = 123;
       cb(null, data);
     });
-    mockSocket.on('myTable:update', function(data, cb){
-      cb(null, data);
-    });
 
-    console.log('bindTable', bindTable);
+    let update = record => {
+      record.name = 'James Moore';
+      return myTable.update(record);
+    };
+
+    let assert = updatedRecord => {
+      expect(updatedRecord.name).toEqual('James Moore');
+      done();
+    };
+
     var myTable = bindTable.table('myTable');
     myTable.add({name: 'james'})
-      .then(function(record){
-        record.name = 'James Moore';
-        return myTable.update(record);
-      })
-      .then(function(updatedRecord){
-        expect(updatedRecord.name).toEqual('James Moore');
-        done();
-      });
+           .then(update)
+           .then(assert);
   });
 
-  it('should update an existing record in the rows array', function(done){
-    mockSocket.on('myTable:add', function(data, cb){
+  it('should update an existing record in the rows array', (done) => {
+    mockSocket.on('myTable:update', (data, cb) => cb(null, data));
+    mockSocket.on('myTable:add', (data, cb) => {
       data.id = 123;
       cb(null, data);
     });
-    mockSocket.on('myTable:update', function(data, cb){
-      cb(null, data);
-    });
 
-    console.log('bindTable', bindTable);
+    let update = record => {
+      record.name = 'James Moore';
+      return myTable.update(record);
+    };
+
+    let assert = updatedRecord => {
+      expect(myTable.rows[0].name).toEqual('James Moore');
+      done();
+    };
+
     var myTable = bindTable.table('myTable');
     myTable.add({name: 'james'})
-      .then(function(record){
-        record.name = 'James Moore';
-        return myTable.update(record);
-      })
-      .then(function(updatedRecord){
-        expect(myTable.rows[0].name).toEqual('James Moore');
-        done();
-      });
+           .then(update)
+           .then(assert);
   });
 
-  it('should not update other records in rows array', function(done){
+  it('should not update other records in rows array', (done) => {
     var idCounter = 0;
-    mockSocket.on('myTable:add', function(data, cb){
+    mockSocket.on('myTable:update', (data, cb) => cb(null, data));
+    mockSocket.on('myTable:add', (data, cb) => {
       data.id = ++idCounter;
       cb(null, data);
     });
-    mockSocket.on('myTable:update', function(data, cb){
-      cb(null, data);
-    });
+
+    let addAnother = record => myTable.add({name: 'james'});
+
+    let update = record => {
+      record.name = 'James Moore';
+      return myTable.update(record);
+    };
+
+    let assert = updatedRecord => {
+      expect(myTable.rows[0].name).toEqual('Bob');
+      expect(myTable.rows[1].name).toEqual('James Moore')
+      done();
+    };
 
     var myTable = bindTable.table('myTable');
     myTable.add({name: 'Bob'})
-      .then(function(record){
-        return myTable.add({name: 'james'});
-      })
-      .then(function(record){
-        record.name = 'James Moore';
-        return myTable.update(record);
-      })
-      .then(function(updatedRecord){
-        expect(myTable.rows[0].name).toEqual('Bob');
-        done();
-      });
+           .then(addAnother)
+           .then(update)
+           .then(assert);
   });
 
-  it('should delete a record', function(done){
+  it('should delete a record', (done) => {
     var idCounter = 0;
-    mockSocket.on('myTable:add', function(data, cb){
+    mockSocket.on('myTable:delete', (data, cb) => cb(null, data));
+    mockSocket.on('myTable:add', (data, cb) => {
       data.id = ++idCounter;
       cb(null, data);
     });
-    mockSocket.on('myTable:delete', function(data, cb){
-      cb(null, data);
-    });
+
+    let addAnother = record => myTable.add({name: 'Bob'});
+
+    let deleteRecord = record => myTable.delete(record);
+
+    let assert = result => {
+      expect(myTable.rows.length).toEqual(1);
+      expect(myTable.rows[0].name).toEqual('James');
+      done();
+    };
+
     var myTable = bindTable.table('myTable');
     myTable.add({name: 'James'})
-      .then(function (record) {
-        console.log('adding', record);
-        return myTable.add({name: 'Bob'})
-      })
-      .then(function(record){
-        console.log('deleting', record);
-        return myTable.delete(record)
-      })
-      .then(function(result){
-        console.log('result', result);
-        expect(myTable.rows.length).toEqual(1);
-        done();
-      });
+           .then(addAnother)
+           .then(deleteRecord)
+           .then(assert);
   });
 
-  it('should update array automatically on outside update', function(done){
-    mockSocket.on('myTable:add', function(data, cb){
+  it('should update array automatically on outside update', (done) => {
+    var changes = {
+      new_val: { id: 100, name: 'James Moore' },
+      old_val: { id: 100, name: 'James'}
+    };
+    mockSocket.on('myTable:add', (data, cb) => {
       data.id = 100;
       cb(null, data);
     });
 
+    let updateAndAssert = record => mockSocket.emit('myTable:changes', changes, assert);
+
+    let assert = (err, response) => {
+      expect(myTable.rows[0].name).toEqual('James Moore');
+      done();
+    };
+
     var myTable = bindTable.table('myTable');
-    console.log('myTable', myTable);
-    console.log('table', myTable.table);
     myTable.bind({}, 10, 0);
     myTable.add({name: 'James'})
-      .then(function(record){
-        var changes = {
-          new_val: {
-            id: 100,
-            name: 'James Moore'
-          },
-          old_val: {
-            id: 100,
-            name: 'James'
-          }
-        };
-        mockSocket.emit('myTable:changes', changes, function(err, response){
-          expect(myTable.rows[0].name).toEqual('James Moore');
-          done();
-        })
-      });
+           .then(updateAndAssert);
   });
 });
