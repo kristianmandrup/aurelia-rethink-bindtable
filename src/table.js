@@ -1,11 +1,11 @@
 import createPromise from './util';
 import Record from './record';
 
-console.log('imported Record', Record);
+//console.log('imported Record', Record);
 
 export default class Table {
-  constructor(tableName, options) {
-    console.log('create table', tableName);
+  constructor(tableName, options = {}) {
+    //console.log('create table', tableName);
 
     this.socket = options.socket;
     let table = {};
@@ -14,19 +14,19 @@ export default class Table {
     this.type = 'Table';
     table.tableName = tableName;
 
-    table.addEventName = options.addEventName 
+    table.addEventName = options.addEventName
       || table.tableName + ':add';
 
-    table.findEventName = options.findEventName 
+    table.findEventName = options.findEventName
       || table.tableName + ':findById';
 
-    table.updateEventName = options.updateEventName 
+    table.updateEventName = options.updateEventName
       || table.tableName + ':update';
 
-    table.deleteEventName = options.deleteEventName 
+    table.deleteEventName = options.deleteEventName
       || table.tableName + ':delete';
 
-    table.startChangesEventName = options.startChangesEventName 
+    table.startChangesEventName = options.startChangesEventName
       || tableName + ':changes:start';
 
     table.endChangesEventName = options.endChangesEventName
@@ -47,11 +47,11 @@ export default class Table {
     table.add       = this.add;
     table.update    = this.update;
     table.findById  = this.findById;
-    table.log       = this.log; 
+    table.log       = this.log;
     table.table     = table;
 
     table.save = (record) => {
-      console.log('Save:', record);
+      //console.log('Save:', record);
       return record.id ? this.update(record) : this.add(record);
     }
 
@@ -62,14 +62,14 @@ export default class Table {
 
     this.table = table;
 
-    console.log('table created', this.table);
+    //console.log('table created', this.table);
 
     return table;
   }
 
   on(record) {
     this.log('on');
-    console.log('Record', record);
+    //console.log('Record', record);
     return new Record(this, record);
   }
 
@@ -97,14 +97,14 @@ export default class Table {
 
   findInsertIndex(record){
     this.log('findInsertIndex');
-    return this.on(record).findInsertIndex(); 
+    return this.on(record).findInsertIndex();
   }
 
   findById(id) {
     this.log('findById');
     let table = this.table;
     let socket = this.socket;
-    var promise = createPromise(function(reject, resolve) {      
+    var promise = createPromise(function(reject, resolve) {
       socket.emit(table.findEventName, id, function(err, result){
         if(err){
           reject(err);
@@ -128,13 +128,13 @@ export default class Table {
     rows = rows || [];
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i];
-      console.log('find match', row, i, pkName, record)
+      //console.log('find match', row, i, pkName, record)
       if(row[pkName] === record[pkName]){
         return i;
       }
     };
     return -1;
-  } 
+  }
 
   remove(rows, id, pkName) {
     this.log('remove');
@@ -152,14 +152,14 @@ export default class Table {
   updateLocalRows(change){
     this.log('updateLocalRows');
     let table = this.table;
-    console.log('change', change);
+    //console.log('change', change);
 
     if(change.new_val === null){
-      console.log('deleting', change.old_val.id);
+      //console.log('deleting', change.old_val.id);
       this.deleteLocalRow(change.old_val.id);
     }
     else{
-      console.log('upserting', change.new_val);
+      //console.log('upserting', change.new_val);
       this.upsertLocalRow(change.new_val);
     }
   }
@@ -170,12 +170,12 @@ export default class Table {
     let table         = this.table;
     var changeOptions = {
       limit: limit || 10,
-      offset: offset || 0, 
+      offset: offset || 0,
       filter: filter || {}
     };
-    console.log('this', this);
-    console.log('table', table);
-    console.log('startWatchingChanges', this.startWatchingChanges);
+    //console.log('this', this);
+    //console.log('table', table);
+    //console.log('startWatchingChanges', this.startWatchingChanges);
 
     this.startWatchingChanges(changeOptions);
 
@@ -187,17 +187,17 @@ export default class Table {
   }
 
 
-  reconnect(options){    
+  reconnect(options){
     var that = this;
     let socket = this.socket;
     let table = this.table;
     return function() {
       that.log('reconnectHandler');
-      socket.emit(table.startChangesEventName, options);  
-    }    
+      socket.emit(table.startChangesEventName, options);
+    }
   }
 
-  startWatchingChanges(options) {    
+  startWatchingChanges(options) {
     let socket = this.socket;
     let table = this.table;
     this.log('startWatchingChanges');
@@ -211,13 +211,13 @@ export default class Table {
       that.updateLocalRows(change)
       if(cb){
         cb(null);
-      }      
+      }
     }
   }
 
   unBind() {
     this.log('unBind');
-    let socket = this.socket;    
+    let socket = this.socket;
     let table = this.table;
     socket.emit(table.endChangesEventName);
     socket.removeListener(table.listenEventName, table.changeHandler);
