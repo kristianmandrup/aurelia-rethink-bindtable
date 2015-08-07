@@ -1,8 +1,9 @@
-# Aurelia BindTable provides cool Aurelia bindings to RethinkDB
+Aurelia BindTable provides cool Aurelia bindings to RethinkDB
+=============================================================
 
 Forked from https://github.com/knowthen/BindTable and tweaked to work for Aurelia ;)
 
-The bindings are realtime using [socket.io](https://github.com/Automattic/socket.io). 
+The bindings are realtime using [socket.io](https://github.com/Automattic/socket.io).
 
 BindTable was inspired by [Build Realtime Apps](http://knowthen.com/episode-10-building-realtime-applications-just-got-easy/)
 
@@ -12,13 +13,47 @@ See [Aurelia getting started](https://gist.github.com/kristianmandrup/e1099f54bb
 
 Install global binaries:
 
-`$ npm install -g jspm karma-cli`
-`$ jspm init` 
+```sh
+$ jspm init
+```
 
 Install module dependencies:
 
-`$ npm install && jspm install`
-`$ jspm dl-loader`
+```sh
+$ npm install && jspm install
+```
+
+1.	Use jspm to install aurelia-rethinkdb
+
+```shell
+  jspm install aurelia-rethinkdb
+```
+
+1.	Install RethinkDB:
+
+```shell
+  jspm install rethinkdb
+```
+
+1.	Use the plugin in your app's main.js:
+
+```javascript
+  export function configure(aurelia) {
+    aurelia.use
+      .standardConfiguration()
+      .plugin('aurelia-rethinkdb');  // <--------<<
+
+    aurelia.start().then(a => a.setRoot());
+  }
+```
+
+1.	Now you're ready to use RethinkDB bindings in your Aurelia application:
+
+```javascript
+  import rethink from 'aurelia-rethinkdb';
+
+  ...
+```
 
 ### RethinkDB console
 
@@ -31,6 +66,10 @@ You can play around with the RethinkDB tables using the built in web console. To
 Add a table and fill in the data. Then test it.
 
 ### Running tests
+
+Install Karma CLI
+
+`$ npm install -g jspm karma-cli`
 
 ```
 $ karma start
@@ -61,7 +100,7 @@ To configure a View-Model `Questions` that binds to the RethinkDB table `'questi
 PS: Here we assume we have a `filters` object, which can be injected and used.
 
 ```javascript
-import {Bindable} from 'aurelia-bindtable';
+import {Bindable} from 'aurelia-rethinkdb';
 import io from 'socket.io-client';
 import filters from './filters';
 
@@ -80,10 +119,9 @@ export class Questions extends Bindable {
 }
 ```
 
-That's it!! 
+That's it!!
 
-Now you can bind to the variable `rows`.
-You can use the variable `table` to directly interact with table methods such as adding or upserting rows etc. 
+Now you can bind to the variable `rows`. You can use the variable `table` to directly interact with table methods such as adding or upserting rows etc.
 
 ```
 table.delete(record)
@@ -102,7 +140,6 @@ See [Server API](http://socket.io/docs/server-api)
 
 ```javascript
 io.on('connection', function(socket){
-
   socket.on('question:findById', function(id, cb){
     r.table('question')
       .get(id)
@@ -110,14 +147,12 @@ io.on('connection', function(socket){
   });
 
   socket.on('question:add', function(record, cb){
-    
     record = _.pick(record, 'name', 'question');
     record.createdAt = new Date();
-    
+
     r.table('question')
       .insert(record)
       .run(function(err, result){
-
         if(err){
           cb(err);
         }
@@ -125,33 +160,28 @@ io.on('connection', function(socket){
           record.id = result.generated_keys[0];
           cb(null, record);
         }
-
       });
-
   });
-  socket.on('question:update', function(record, cb){
 
+  socket.on('question:update', function(record, cb){
     record = _.pick(record, 'id', 'name', 'question');
     r.table('question')
       .get(record.id)
       .update(record)
       .run(cb);
-    
   });
 
   socket.on('question:delete', function(id, cb){
-
     r.table('question')
       .get(id)
       .delete()
       .run(cb);
-
   });
 
   socket.on('question:changes:start', function(data){
 
     let limit, filter;
-    limit = data.limit || 100; 
+    limit = data.limit || 100;
     filter = data.filter || {};
     r.table('question')
       .orderBy({index: r.desc('createdAt')})
@@ -161,11 +191,8 @@ io.on('connection', function(socket){
       .run({cursor: true}, handleChange);
 
     function handleChange(err, cursor){
-
       if(err){
-        
-        console.log(err); 
-      
+        console.log(err);
       }
       else{
 
@@ -192,13 +219,7 @@ io.on('connection', function(socket){
         socket.removeListener('question:changes:stop', stopCursor);
         socket.removeListener('disconnect', stopCursor);
       }
-
     }
-
-  });
-  
-  
+  });  
 });
-
-
 ```
