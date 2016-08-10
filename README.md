@@ -7,53 +7,21 @@ The bindings are realtime using [socket.io](https://github.com/Automattic/socket
 
 BindTable was inspired by [Build Realtime Apps](http://knowthen.com/episode-10-building-realtime-applications-just-got-easy/)
 
-See [Aurelia getting started](https://gist.github.com/kristianmandrup/e1099f54bbb7f6968af7) to get up and running!
+### Installation
 
-### Install
-
-Install global binaries:
-
-```sh
-$ jspm init
-```
-
-Install module dependencies:
-
-```sh
-$ npm install && jspm install
-```
-
-1.	Use jspm to install aurelia-rethinkdb
+*Install aurelia-rethinkdb*
 
 ```shell
-  jspm install aurelia-rethinkdb
+  npm i aurelia-rethinkdb --save
 ```
 
-1.	Install RethinkDB:
+*Install RethinkDB*
 
 ```shell
-  jspm install rethinkdb
+  npm i rethinkdb --save
 ```
 
-1.	Use the plugin in your app's main.js:
-
-```javascript
-  export function configure(aurelia) {
-    aurelia.use
-      .standardConfiguration()
-      .plugin('aurelia-rethinkdb');  // <--------<<
-
-    aurelia.start().then(a => a.setRoot());
-  }
-```
-
-1.	Now you're ready to use RethinkDB bindings in your Aurelia application:
-
-```javascript
-  import rethink from 'aurelia-rethinkdb';
-
-  ...
-```
+Now you're ready to use RethinkDB bindings in your Aurelia application:
 
 ### RethinkDB console
 
@@ -95,23 +63,27 @@ Install missing plugin:
 
 See [Client API](http://socket.io/docs/client-api/)
 
-To configure a View-Model `Questions` that binds to the RethinkDB table `'question'` via bindtable over socket.io
+Let's configure a View-Model `Questions` that binds to the RethinkDB table `'question'` via bindtable over socket.io
 
-PS: Here we assume we have a `filters` object, which can be injected and used.
+PS: Here we assume we have a `filters` object with filter functions such as `easy`, which can be injected and used.
 
-```javascript
-import {Bindable} from 'aurelia-rethinkdb';
+The main classes to import are:
+- `Bindable` a base class for Models or View Models to add binding behavior
+- `BindTable` binds directly to a RethinkDB table for realtime sync via socket
+
+```js
+import {Bindable, BindTable} from 'aurelia-rethinkdb';
 import io from 'socket.io-client';
 import filters from './filters';
 
+@inject(filters)
 export class Questions extends Bindable {
-  constructor(filters) {  
-    let socket     = io('localhost');
-    this.filters   = filters;
-    this.bindTable = BindTable.create({socket: socket});
-  }
+  tableName = 'questions';
 
-  tableName: 'questions'
+  constructor(filters) {
+    super({socket: io('localhost'), logging: true});
+    this.filters   = filters;
+  }
 
   filter() {
     this.table.bind(this.filters.easy, this.rowLimit);
@@ -119,15 +91,31 @@ export class Questions extends Bindable {
 }
 ```
 
-That's it!!
+### Bindable
 
-Now you can bind to the variable `rows`. You can use the variable `table` to directly interact with table methods such as adding or upserting rows etc.
+The abstract `Bindable` base class will create an instance variable `rows` (you can bind to) and a `delete(record)` function to delete a record (row) from the table. The rows will be filtered dynamically by the `filter()` method.
 
 ```
-table.delete(record)
-table.add(record)
-table.update(record) // upsert: ie. insert or update
-table.findById(id)
+class Bindable {
+  // ...
+  activate() {
+    this.table = this.bindTable.table(this.tableName);
+
+    this.rows = table.rows;
+    this.delete = table.delete;
+
+    this.filter();
+  }
+}
+```
+
+Now bind to the variable `rows`. You can also use the instance variable `table` to directly interact with table methods such as adding or upserting rows etc.
+
+```
+this.table.delete(record)
+this.table.add(record)
+this.table.update(record) // upsert: ie. insert or update
+this.table.findById(id)
 ```
 
 You can enable logging by passing `logging: true` to the `BindTable` constructor.
@@ -137,6 +125,8 @@ You can enable logging by passing `logging: true` to the `BindTable` constructor
 ### Server side code
 
 See [Server API](http://socket.io/docs/server-api)
+
+For now you need to setup your server to listen to specific socket messages and emit messages back. Ideally this code should be refactrored and auto-generated from an entity API generator or similar.
 
 ```javascript
 io.on('connection', function(socket){
@@ -220,6 +210,6 @@ io.on('connection', function(socket){
         socket.removeListener('disconnect', stopCursor);
       }
     }
-  });  
+  });
 });
 ```
