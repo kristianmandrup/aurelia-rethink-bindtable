@@ -1,10 +1,9 @@
 import BindTable from './bindtable';
+import { inject } from 'aurelia-framework';
 
 export default class Bindable {
-  static inject() { return [BindTable]; }
-
-  constructor(bindTable, socket) {
-    this.bindTable = BindTable.create({socket:socket});
+  constructor(options = {}) {
+    this.bindTable = BindTable.create(options);
   }
 
   get tableName() {

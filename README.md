@@ -1,7 +1,7 @@
 Aurelia BindTable provides cool Aurelia bindings to RethinkDB
 =============================================================
 
-Forked from https://github.com/knowthen/BindTable and tweaked to work for Aurelia ;)
+Forked from [BindTable](https://github.com/knowthen/BindTable) and tweaked to work for Aurelia ;)
 
 The bindings are realtime using [socket.io](https://github.com/Automattic/socket.io).
 
@@ -9,10 +9,10 @@ BindTable was inspired by [Build Realtime Apps](http://knowthen.com/episode-10-b
 
 ### Installation
 
-*Install aurelia-rethinkdb*
+*Install aurelia-rethink-bindtable*
 
 ```shell
-  npm i aurelia-rethinkdb --save
+  npm i aurelia-rethink-bindtable --save
 ```
 
 *Install RethinkDB*
@@ -22,6 +22,18 @@ BindTable was inspired by [Build Realtime Apps](http://knowthen.com/episode-10-b
 ```
 
 Now you're ready to use RethinkDB bindings in your Aurelia application:
+
+### Distributed modules
+
+The `/dist` folder contains built code for `amd`, `commonjs`, `es6` and `system`. Choose the one that suits your module system of choice!
+
+By default the ES6 distribution is linked to the `main` entry of the `package.json` file.
+
+`import {Bindable} from 'aurelia-rethink-bindtable';`
+
+Commonjs alternative:
+
+`var Bindable = require('aurelia-rethink-bindtable/dist/commonjs').Bindable;`
 
 ### RethinkDB console
 
@@ -63,20 +75,18 @@ Install missing plugin:
 
 See [Client API](http://socket.io/docs/client-api/)
 
-Let's configure a View-Model `Questions` that binds to the RethinkDB table `'question'` via bindtable over socket.io
-
-PS: Here we assume we have a `filters` object with filter functions such as `easy`, which can be injected and used.
+Let's configure a View-Model `Questions` that binds to the RethinkDB table `'question'` via bindtable over *socket.io*
 
 The main classes to import are:
 - `Bindable` a base class for Models or View Models to add binding behavior
 - `BindTable` binds directly to a RethinkDB table for realtime sync via socket
 
 ```js
-import {Bindable, BindTable} from 'aurelia-rethinkdb';
+import {Bindable, BindTable} from 'aurelia-rethink-bindtable';
 import io from 'socket.io-client';
-import filters from './filters';
+import Filters from './filters';
 
-@inject(filters)
+@inject(Filters)
 export class Questions extends Bindable {
   tableName = 'questions';
 
@@ -91,13 +101,88 @@ export class Questions extends Bindable {
 }
 ```
 
+We assume we have a `Filters` class with filter functions such as `easy`, which can be injected as a singleton.
+
+```js
+export default class QuestionFilters {
+  easy(item) {
+    return item.level === 'easy';
+  }
+
+  // more filter methods...
+}
+```
+
+Better to inject `Bindable` than use inheritance!
+
+```js
+import {Bindable} from 'aurelia-rethink-bindtable';
+import io from 'socket.io-client';
+import Filters from './filters';
+
+@inject(Bindable, Filters)
+export class Questions {
+  tableName = 'questions';
+
+  constructor(bindable, filters) {
+    super({socket: io('localhost'), logging: true});
+    this.filters   = filters;
+    this.bindable = bindable;
+  }
+
+  filter() {
+    this.table.bind(this.filters.easy, this.rowLimit);
+  }
+
+  get rows() {
+    return this.bindable.rows;
+  }
+
+  get table() {
+    return this.bindable.table;
+  }
+}
+```
+
+We could combine this with an ES6 compatible `mixin` approach or use a custom `@bindable('questions')` class decorator ;) 
+
+See [here](https://medium.com/google-developers/exploring-es7-decorators-76ecb65fb841#.m6vp42acx) on how to write such a decorator!
+
+```js
+import {bindable} from 'aurelia-rethink-bindtable';
+import io from 'socket.io-client';
+import Filters from './filters';
+
+@inject(Filters)
+@bindable('questions')
+export class Questions {
+  constructor(bindable, filters) {
+    super({socket: io('localhost'), logging: true});
+    this.filters  = filters;
+    this.bindable = bindable;
+  }
+
+  filter() {
+    this.table.bind(this.filters.easy, this.rowLimit);
+  }
+}
+```
+
 ### Bindable
 
-The abstract `Bindable` base class will create an instance variable `rows` (you can bind to) and a `delete(record)` function to delete a record (row) from the table. The rows will be filtered dynamically by the `filter()` method.
+The `Bindable` class will create an instance variable `rows` (you can bind to) and a `delete(record)` function to delete a record (row) from the table. The rows will be filtered dynamically by the `filter()` method.
 
 ```
 class Bindable {
   // ...
+  get tableName() {
+    throw "tableName not defined";
+  }
+
+  get rowLimit() {
+    return 100;
+  }
+
   activate() {
     this.table = this.bindTable.table(this.tableName);
 
@@ -122,11 +207,39 @@ You can enable logging by passing `logging: true` to the `BindTable` constructor
 
 `BindTable.create({socket: socket, logging: true});`
 
+### Development and contributions
+
+Would be awesome to make this a plugin (if it makes sense), perhaps by making `Bindable` a registered singleton for injection so we use composition over inheritance!
+
+See [Skeleton plugin](https://github.com/aurelia/skeleton-plugin) and [making our first plugin](http://patrickwalters.net/making-out-first-plugin/)
+
+Would also be nice to create server side API generators for the entity/socket code (see below).
+
+`npm i` - to install dependencies
+
+`gulp build` - to build distribution
+
+See `/build/tasks` for all gulp tasks supported ;)
+
+`npm link` to link this module while developing. Add more tests in `spec` and run using karma via `gulp test`.
+
 ### Server side code
 
-See [Server API](http://socket.io/docs/server-api)
+You need to setup your server to listen to specific socket messages and emit messages back!
 
-For now you need to setup your server to listen to specific socket messages and emit messages back. Ideally this code should be refactrored and auto-generated from an entity API generator or similar.
+You can experiment with the new `server/entity-listener` class which you can use as follows:
+
+```js
+questionListener = new EntityListener('question', {
+  orderBy: 'createdAt'
+}).listen();
+```
+
+The `EntityListener` essentially wraps the code below (currently untested!).
+
+The following Server code example for the `question` table is taken directly from the original [BindTable](https://github.com/knowthen/BindTable) example
+
+See [Socket Server API](http://socket.io/docs/server-api) for more details.
 
 ```javascript
 io.on('connection', function(socket){

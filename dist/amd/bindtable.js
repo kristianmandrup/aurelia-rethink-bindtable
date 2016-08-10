@@ -16,7 +16,7 @@ define(['exports', 'module', './record', './table'], function (exports, module, 
       _classCallCheck(this, BindTable);
 
       if (!options.socket) {
-        throw new Error('must supply a socket io connection');
+        throw new Error('You must supply a socket io connection');
       }
       this.socket = options.socket;
       this.options = options;

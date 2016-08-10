@@ -21,7 +21,7 @@ var BindTable = (function () {
     _classCallCheck(this, BindTable);
 
     if (!options.socket) {
-      throw new Error('must supply a socket io connection');
+      throw new Error('You must supply a socket io connection');
     }
     this.socket = options.socket;
     this.options = options;

@@ -8,7 +8,7 @@ import Table  from './table';
 export default class BindTable {
   constructor(options = {}) {
     if (!options.socket) {
-      throw new Error('must supply a socket io connection');
+      throw new Error('You must supply a socket io connection');
     }
     this.socket  = options.socket;
     this.options = options;

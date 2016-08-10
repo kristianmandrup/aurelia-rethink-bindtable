@@ -1,23 +1,21 @@
-define(["exports", "module", "./bindtable"], function (exports, module, _bindtable) {
-  "use strict";
+define(['exports', 'module', './bindtable', 'aurelia-framework'], function (exports, module, _bindtable, _aureliaFramework) {
+  'use strict';
 
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
   var _BindTable = _interopRequireDefault(_bindtable);
 
   var Bindable = (function () {
-    Bindable.inject = function inject() {
-      return [_BindTable["default"]];
-    };
+    function Bindable() {
+      var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-    function Bindable(bindTable, socket) {
       _classCallCheck(this, Bindable);
 
-      this.bindTable = _BindTable["default"].create({ socket: socket });
+      this.bindTable = _BindTable['default'].create(options);
     }
 
     Bindable.prototype.filter = function filter() {
@@ -28,7 +26,7 @@ define(["exports", "module", "./bindtable"], function (exports, module, _bindtab
       this.table = this.bindTable.table(this.tableName);
 
       this.rows = table.rows;
-      this["delete"] = table["delete"];
+      this['delete'] = table['delete'];
 
       this.filter();
     };
@@ -38,12 +36,12 @@ define(["exports", "module", "./bindtable"], function (exports, module, _bindtab
     };
 
     _createClass(Bindable, [{
-      key: "tableName",
+      key: 'tableName',
       get: function get() {
         throw "tableName not defined";
       }
     }, {
-      key: "rowLimit",
+      key: 'rowLimit',
       get: function get() {
         return 100;
       }

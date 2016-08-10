@@ -1,9 +1,5 @@
-System.register(['./bindable', './bindtable'], function (_export) {
+System.register(['./bindable', './bindtable', './decorators'], function (_export) {
   'use strict';
-
-  _export('configure', configure);
-
-  function configure(aurelia) {}
 
   return {
     setters: [function (_bindable) {
@@ -13,6 +9,10 @@ System.register(['./bindable', './bindtable'], function (_export) {
     }, function (_bindtable) {
       for (var _key2 in _bindtable) {
         if (_key2 !== 'default') _export(_key2, _bindtable[_key2]);
+      }
+    }, function (_decorators) {
+      for (var _key3 in _decorators) {
+        if (_key3 !== 'default') _export(_key3, _decorators[_key3]);
       }
     }],
     execute: function () {}

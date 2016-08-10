@@ -1,6 +1,6 @@
 {
   "name": "aurelia-rethink-bindtable",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Aurelia library for binding RethinkDB via Socket.IO",
   "keywords": [
     "aurelia",
@@ -19,7 +19,7 @@
     "type": "git",
     "url": "http://github.com/kristianmandrup/aurelia-rethink-bindtable"
   },
-  "main": "src/bindtable.js",
+  "main": "dist/es6/index.js",
   "scripts": {
     "test": "./node_modules/.bin/karma start --browsers Chrome --single-run"
   },
@@ -66,5 +66,8 @@
     "run-sequence": "^1.0.2",
     "vinyl-paths": "^1.0.0",
     "yargs": "^2.1.1"
+  },
+  "dependencies": {
+    "lodash": "^4.14.2"
   }
 }
