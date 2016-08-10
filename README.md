@@ -25,13 +25,29 @@ Now you're ready to use RethinkDB bindings in your Aurelia application:
 
 ### Distributed modules
 
-The `/dist` folder contains built code for `amd`, `commonjs`, `es6` and `system`. Choose the one that suits your module system of choice!
+The `/dist` folder contains built code for `amd`, `commonjs`, `es6` and `system`. Choose the one that best fits your module system.
+
+### npm and ES6
 
 By default the ES6 distribution is linked to the `main` entry of the `package.json` file.
 
 `import {Bindable} from 'aurelia-rethink-bindtable';`
 
-Commonjs alternative:
+### JSPM (SystemJs) and Amd
+
+For JSPM the `amd` distribution is used by default (see `jspm` section of `package.json`)
+
+```json
+  "jspm": {
+    "main": "dist/amd/index",
+    "format": "amd",
+    "directories": {
+      "lib": "dist/amd"
+```
+
+### Custom distribution loading
+
+Commonjs example:
 
 `var Bindable = require('aurelia-rethink-bindtable/dist/commonjs').Bindable;`
 

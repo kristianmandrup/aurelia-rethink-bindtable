@@ -1,7 +1,7 @@
 {
   "name": "aurelia-rethink-bindtable",
-  "version": "0.1.2",
-  "description": "Aurelia library for binding RethinkDB via Socket.IO",
+  "version": "0.1.3",
+  "description": "Aurelia library for binding RethinkDB tables via Socket.IO",
   "keywords": [
     "aurelia",
     "rethinkdb",
@@ -24,7 +24,7 @@
     "test": "./node_modules/.bin/karma start --browsers Chrome --single-run"
   },
   "jspm": {
-    "main": "index",
+    "main": "dist/amd/index",
     "format": "amd",
     "directories": {
       "lib": "dist/amd"
