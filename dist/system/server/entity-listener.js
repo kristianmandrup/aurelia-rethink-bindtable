@@ -1,7 +1,7 @@
 System.register(['lodash/pick'], function (_export) {
   'use strict';
 
-  var pick, EntityListener;
+  var pick, server, io, EntityListener;
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
@@ -10,6 +10,9 @@ System.register(['lodash/pick'], function (_export) {
       pick = _lodashPick['default'];
     }],
     execute: function () {
+      server = require('http').createServer();
+      io = require('socket.io')(server);
+
       EntityListener = (function () {
         function EntityListener(tableName) {
           var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
@@ -18,10 +21,11 @@ System.register(['lodash/pick'], function (_export) {
 
           this.tableName = tableName;
           this.orderBy = options.orderBy || 'createdAt';
+          this.io = options.io || io;
         }
 
         EntityListener.prototype.listen = function listen() {
-          io.on('connection', this.listenTable);
+          this.io.on('connection', this.listenTable);
         };
 
         EntityListener.prototype.listenTable = function listenTable(socket) {

@@ -160,7 +160,7 @@ export class Questions {
 }
 ```
 
-We could combine this with an ES6 compatible `mixin` approach or use a custom `@bindable('questions')` class decorator ;) 
+We could combine this with an ES6 compatible `mixin` approach or use a custom `@bindable([table name], [socket addr])` class decorator ;) 
 
 See [here](https://medium.com/google-developers/exploring-es7-decorators-76ecb65fb841#.m6vp42acx) on how to write such a decorator!
 
@@ -170,10 +170,10 @@ import io from 'socket.io-client';
 import Filters from './filters';
 
 @inject(Filters)
-@bindable('questions')
+@bindable('questions', 'localhost')
 export class Questions {
   constructor(bindable, filters) {
-    super({socket: io('localhost'), logging: true});
+    super({logging: true});
     this.filters  = filters;
     this.bindable = bindable;
   }
@@ -246,8 +246,12 @@ You need to setup your server to listen to specific socket messages and emit mes
 You can experiment with the new `server/entity-listener` class which you can use as follows:
 
 ```js
+const server = require('http').createServer();
+const io = require('socket.io')(server);
+
 questionListener = new EntityListener('question', {
-  orderBy: 'createdAt'
+  orderBy: 'createdAt',
+  io: io // to override default socket.io (toptional)
 }).listen();
 ```
 

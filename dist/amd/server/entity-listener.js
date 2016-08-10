@@ -7,6 +7,9 @@ define(['exports', 'module', 'lodash/pick'], function (exports, module, _lodashP
 
   var _pick = _interopRequireDefault(_lodashPick);
 
+  var server = require('http').createServer();
+  var io = require('socket.io')(server);
+
   var EntityListener = (function () {
     function EntityListener(tableName) {
       var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
@@ -15,10 +18,11 @@ define(['exports', 'module', 'lodash/pick'], function (exports, module, _lodashP
 
       this.tableName = tableName;
       this.orderBy = options.orderBy || 'createdAt';
+      this.io = options.io || io;
     }
 
     EntityListener.prototype.listen = function listen() {
-      io.on('connection', this.listenTable);
+      this.io.on('connection', this.listenTable);
     };
 
     EntityListener.prototype.listenTable = function listenTable(socket) {

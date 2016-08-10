@@ -1,8 +1,19 @@
 import BindTable from './bindtable';
 import { inject } from 'aurelia-framework';
+import io from 'socket.io-client';
 
 export default class Bindable {
   constructor(options = {}) {
+    socket = options.socket || 
+             options.socketHost || 
+             this.constructor.socket || 
+             this.constructor.socketHost;
+
+    if (typeof socket === 'string') {
+      socket = io(socket);
+    }
+    options.socket = socket;
+
     this.bindTable = BindTable.create(options);
   }
 

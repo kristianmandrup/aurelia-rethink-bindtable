@@ -14,11 +14,22 @@ var _bindtable2 = _interopRequireDefault(_bindtable);
 
 var _aureliaFramework = require('aurelia-framework');
 
+var _socketIoClient = require('socket.io-client');
+
+var _socketIoClient2 = _interopRequireDefault(_socketIoClient);
+
 var Bindable = (function () {
   function Bindable() {
     var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
     _classCallCheck(this, Bindable);
+
+    socket = options.socket || options.socketHost || this.constructor.socket || this.constructor.socketHost;
+
+    if (typeof socket === 'string') {
+      socket = _socketIoClient2['default'](socket);
+    }
+    options.socket = socket;
 
     this.bindTable = _bindtable2['default'].create(options);
   }

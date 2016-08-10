@@ -1,7 +1,7 @@
-System.register(['./bindtable', 'aurelia-framework'], function (_export) {
+System.register(['./bindtable', 'aurelia-framework', 'socket.io-client'], function (_export) {
   'use strict';
 
-  var BindTable, inject, Bindable;
+  var BindTable, inject, io, Bindable;
 
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -12,6 +12,8 @@ System.register(['./bindtable', 'aurelia-framework'], function (_export) {
       BindTable = _bindtable['default'];
     }, function (_aureliaFramework) {
       inject = _aureliaFramework.inject;
+    }, function (_socketIoClient) {
+      io = _socketIoClient['default'];
     }],
     execute: function () {
       Bindable = (function () {
@@ -19,6 +21,13 @@ System.register(['./bindtable', 'aurelia-framework'], function (_export) {
           var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
           _classCallCheck(this, Bindable);
+
+          socket = options.socket || options.socketHost || this.constructor.socket || this.constructor.socketHost;
+
+          if (typeof socket === 'string') {
+            socket = io(socket);
+          }
+          options.socket = socket;
 
           this.bindTable = BindTable.create(options);
         }
