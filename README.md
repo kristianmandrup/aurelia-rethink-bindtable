@@ -163,27 +163,46 @@ export class Questions {
 }
 ```
 
-We could combine this with an ES6 compatible `mixin` approach or use a custom `@bindable([table name], [socket addr])` class decorator ;) 
+You could combine this with an ES6 compatible `mixin` approach or use a custom `@bindable([table name], [socket addr])` class decorator ;) 
+[Decorators guide](https://medium.com/google-developers/exploring-es7-decorators-76ecb65fb841#.m6vp42acx)
 
-See [here](https://medium.com/google-developers/exploring-es7-decorators-76ecb65fb841#.m6vp42acx) on how to write such a decorator!
+We provide such a class decorator `@bindable`. You tell `@bindable` the name of the table, 
+such as `questions` and optionally the server host (default: `localhost`).
+`@bindable` will auto-inject `Bindable` (first argument in constructor) and add the `tableName` and `socketHost` 
+on the constructor itself (ie. as static properties).
 
 ```js
 import {bindable} from 'aurelia-rethink-bindtable';
-import io from 'socket.io-client';
-import Filters from './filters';
 
-@inject(Filters)
-@bindable('questions', 'localhost')
+@bindable('questions', 'www.mydomain.com')
 export class Questions {
-  constructor(bindable, filters) {
-    this.filters  = filters;
-    this.bound = bindable.configure({logging: true, socketHost: this.socketHost });
+  constructor(bindable) {
+    this.bound = bindable.configure({logging: true, socketHost: Questions.socketHost});
   }
 
-  filter() {
-    this.table.bind(this.filters.easy, this.rowLimit);
+  selectRow(row) {
+    this.selectedRow = row;
+  }
+
+  deleteSelected() {
+    this.table.delete(this.selectedRow);
   }
 }
+```
+
+The `bindable` decorator creates two getter methods `rows` and `table` which delegate to the `this.bound` properties of the same name, 
+(ie `this.bound.rows` and `this.bound.table`) by convention.
+
+You can use `rows` with `repeat.for` (in [Aurelia](aurelia.io)) to dynamically display the row data of the table.
+
+```html
+<template>
+    <ul repeat.for="row of rows">
+      <li click.bind="selectRow(row)">${row.id}</li>
+      <li click.bind="selectRow(row)">${row.name}</li>
+    </ul>
+    <button click.bind="deleteSelected()">Delete</button>
+</template>
 ```
 
 ### Bindable
