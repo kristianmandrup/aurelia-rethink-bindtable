@@ -8,11 +8,11 @@ export function bindable(tableName, socketHost = 'localhost') {
       target.socketHost = socketHost;
 
       Object.defineProperty(target.prototype, 'rows', {
-        get: function() { return this.bindable.rows },
+        get: function() { return this.bound.rows },
       });
 
       Object.defineProperty(target, 'table', {
-        get: function() { return this.bindable.table },
+        get: function() { return this.bound.table },
       });
   }
 }

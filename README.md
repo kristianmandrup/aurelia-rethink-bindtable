@@ -43,6 +43,9 @@ For JSPM the `amd` distribution is used by default (see `jspm` section of `packa
     "format": "amd",
     "directories": {
       "lib": "dist/amd"
+    ...    
+    }
+  }
 ```
 
 ### Custom distribution loading
@@ -143,7 +146,7 @@ export class Questions {
   constructor(bindable, filters) {
     super({socket: io('localhost'), logging: true});
     this.filters   = filters;
-    this.bindable = bindable;
+    this.bound = bindable;
   }
 
   filter() {
@@ -151,11 +154,11 @@ export class Questions {
   }
 
   get rows() {
-    return this.bindable.rows;
+    return this.bound.rows;
   }
 
   get table() {
-    return this.bindable.table;
+    return this.bound.table;
   }
 }
 ```
@@ -173,9 +176,8 @@ import Filters from './filters';
 @bindable('questions', 'localhost')
 export class Questions {
   constructor(bindable, filters) {
-    super({logging: true});
     this.filters  = filters;
-    this.bindable = bindable;
+    this.bound = bindable.configure({logging: true, socketHost: this.socketHost });
   }
 
   filter() {

@@ -4,6 +4,10 @@ import io from 'socket.io-client';
 
 export default class Bindable {
   constructor(options = {}) {
+    this.configure(options);
+  }
+
+  configure(options = {}) {
     socket = options.socket || 
              options.socketHost || 
              this.constructor.socket || 
@@ -15,6 +19,7 @@ export default class Bindable {
     options.socket = socket;
 
     this.bindTable = BindTable.create(options);
+    return this;
   }
 
   get tableName() {
