@@ -15,18 +15,17 @@ define(['exports', './bindable', 'socket.io-client'], function (exports, _bindab
 
     return function (target, key, descriptor) {
       target.tableName = tableName;
-      target.inject = (target.inject || []).concat(_Bindable['default']);
       target.socketHost = socketHost;
 
       Object.defineProperty(target.prototype, 'rows', {
         get: function get() {
-          return this.bindable.rows;
+          return this.bound.rows;
         }
       });
 
       Object.defineProperty(target, 'table', {
         get: function get() {
-          return this.bindable.table;
+          return this.bound.table;
         }
       });
     };

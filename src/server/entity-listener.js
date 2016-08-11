@@ -1,17 +1,15 @@
-const server = require('http').createServer();
-const io = require('socket.io')(server);
-
 import pick from 'lodash/pick';
 
 export default class EntityListener {
   constructor(tableName, options = {}) {
     this.tableName = tableName;
     this.orderBy = options.orderBy || 'createdAt';
-    this.io = options.io || io;
+    this.io = options.io;
   }
 
   listen() {
     this.io.on('connection', this.listenTable);
+    return this;
   }
 
   listenTable(socket) {

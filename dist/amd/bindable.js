@@ -17,6 +17,12 @@ define(['exports', 'module', './bindtable', 'aurelia-framework', 'socket.io-clie
 
       _classCallCheck(this, Bindable);
 
+      this.configure(options);
+    }
+
+    Bindable.prototype.configure = function configure() {
+      var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
       socket = options.socket || options.socketHost || this.constructor.socket || this.constructor.socketHost;
 
       if (typeof socket === 'string') {
@@ -25,7 +31,8 @@ define(['exports', 'module', './bindtable', 'aurelia-framework', 'socket.io-clie
       options.socket = socket;
 
       this.bindTable = _BindTable['default'].create(options);
-    }
+      return this;
+    };
 
     Bindable.prototype.filter = function filter() {
       this.table.bind(null, this.rowLimit);

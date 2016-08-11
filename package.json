@@ -1,6 +1,6 @@
 {
   "name": "aurelia-rethink-bindtable",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Aurelia library for binding RethinkDB tables via Socket.IO",
   "keywords": [
     "aurelia",

@@ -22,6 +22,12 @@ System.register(['./bindtable', 'aurelia-framework', 'socket.io-client'], functi
 
           _classCallCheck(this, Bindable);
 
+          this.configure(options);
+        }
+
+        Bindable.prototype.configure = function configure() {
+          var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
           socket = options.socket || options.socketHost || this.constructor.socket || this.constructor.socketHost;
 
           if (typeof socket === 'string') {
@@ -30,7 +36,8 @@ System.register(['./bindtable', 'aurelia-framework', 'socket.io-client'], functi
           options.socket = socket;
 
           this.bindTable = BindTable.create(options);
-        }
+          return this;
+        };
 
         Bindable.prototype.filter = function filter() {
           this.table.bind(null, this.rowLimit);

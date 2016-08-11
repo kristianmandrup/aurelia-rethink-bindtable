@@ -168,13 +168,15 @@ You could combine this with an ES6 compatible `mixin` approach or use a custom `
 
 We provide such a class decorator `@bindable`. You tell `@bindable` the name of the table, 
 such as `questions` and optionally the server host (default: `localhost`).
-`@bindable` will auto-inject `Bindable` (first argument in constructor) and add the `tableName` and `socketHost` 
-on the constructor itself (ie. as static properties).
+`@bindable` will add the `tableName` and `socketHost` on the class itself (ie. as static properties).
+
+Here we use the Aurelia `@inject` decorator. You could use any similar approach, such as [needlepoint](https://github.com/andrewmunsell/needlepoint) `@dependencies`
 
 ```js
 import {bindable} from 'aurelia-rethink-bindtable';
 
 @bindable('questions', 'www.mydomain.com')
+@inject(Bindable)
 export class Questions {
   constructor(bindable) {
     this.bound = bindable.configure({logging: true, socketHost: Questions.socketHost});
@@ -267,20 +269,20 @@ You need to setup your server to listen to specific socket messages and emit mes
 You can experiment with the new `server/entity-listener` class which you can use as follows:
 
 ```js
-const server = require('http').createServer();
+import connect from 'aurelia-rethink-bindtable/server';
 const io = require('socket.io')(server);
 
-questionListener = new EntityListener('question', {
+connect({
   orderBy: 'createdAt',
-  io: io // to override default socket.io (toptional)
-}).listen();
+  io: io
+}).forTables('questions', 'answers');
 ```
 
-The `EntityListener` essentially wraps the code below (currently untested!).
+You can also use `EntityListener` and `EntityBinders` classes directly or extends as you want etc. (see code in `src/server`) 
+`EntityListener` essentially wraps the code below (currently still untested!). which is the server io listen code for the `question` table. 
+This code was taken from the original [BindTable](https://github.com/knowthen/BindTable) example
 
-The following Server code example for the `question` table is taken directly from the original [BindTable](https://github.com/knowthen/BindTable) example
-
-See [Socket Server API](http://socket.io/docs/server-api) for more details.
+Also see [Socket Server API](http://socket.io/docs/server-api) for more details on using socket.io on the server.
 
 ```javascript
 io.on('connection', function(socket){
