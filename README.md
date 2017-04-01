@@ -1,6 +1,8 @@
 Aurelia BindTable provides cool Aurelia bindings to RethinkDB
 =============================================================
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/kristianmandrup/aurelia-rethink-bindtable.svg)](https://greenkeeper.io/)
+
 Forked from [BindTable](https://github.com/knowthen/BindTable) and tweaked to work for Aurelia ;)
 
 The bindings are realtime using [socket.io](https://github.com/Automattic/socket.io).
